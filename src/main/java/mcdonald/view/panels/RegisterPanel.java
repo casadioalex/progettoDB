@@ -13,13 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class LoginPanel extends JPanel {
+public class RegisterPanel extends JPanel {
 
-    private static final String TITLE = "LOGIN";
+    private static final String TITLE = "REGISTER";
+    private static final String USERNAME_LABEL_TEXT = "Username:";
     private static final String EMAIL_LABEL_TEXT = "Email:";
     private static final String PASSWORD_LABEL_TEXT = "Password:";
-    private static final String LOGIN_BUTTON_TEXT = "Login";
-    private static final String CREATE_ACCOUNT_BUTTON_TEXT = "Create Account";
+    private static final String ADDRESS_LABEL_TEXT = "Address:";
+    private static final String REGISTER_BUTTON_TEXT = "Register";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -32,12 +33,13 @@ public class LoginPanel extends JPanel {
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
+    private final JTextField usernameField;
     private final JTextField emailField;
     private final JTextField passwordField;
-    private final JButton loginButton;
-    private final JButton createAccountButton;
+    private final JTextField addressField;
+    private final JButton registerButton;
 
-    public LoginPanel() {
+    public RegisterPanel() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -51,6 +53,12 @@ public class LoginPanel extends JPanel {
         add(titleLabel, gbc);
 
         gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel(USERNAME_LABEL_TEXT), gbc);
+        gbc.gridx++;
+        usernameField = new JTextField(TEXT_FIELD_WIDTH);
+        add(usernameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -68,12 +76,14 @@ public class LoginPanel extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy++;
-        createAccountButton = new JButton(CREATE_ACCOUNT_BUTTON_TEXT);
-        add(createAccountButton, gbc);
+        add(new JLabel(ADDRESS_LABEL_TEXT), gbc);
         gbc.gridx++;
-        loginButton = new JButton(LOGIN_BUTTON_TEXT);
-        add(loginButton, gbc);
+        addressField = new JTextField(TEXT_FIELD_WIDTH);
+        add(addressField, gbc);
 
+        gbc.gridy++;
+        registerButton = new JButton(REGISTER_BUTTON_TEXT);
+        add(registerButton, gbc);
     }
 
     @Override

@@ -2,11 +2,15 @@ package mcdonald.view.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import mcdonald.view.panels.LoginPanel;
+import mcdonald.view.panels.RegisterPanel;
 
 public class Window extends JFrame {
 
@@ -17,10 +21,16 @@ public class Window extends JFrame {
     private static final int WIDTH_PROPORTION = 4;
     private static final int HEIGHT_PROPORTION = 3;
 
+    private final List<JPanel> panels = new LinkedList<>();
+
     public Window() {
         setTitle(TITLE);
         setIconImage(new ImageIcon(getClass().getResource(ICON_PATH)).getImage());
         setSize(getCustomSize());
+
+        panels.add(new LoginPanel());
+        panels.add(new RegisterPanel());
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
@@ -33,7 +43,7 @@ public class Window extends JFrame {
     }
 
     public void display() {
-        setContentPane(new LoginPanel());
+        setContentPane(panels.getFirst());
         setLocationByPlatform(true);
         setVisible(true);
     }
