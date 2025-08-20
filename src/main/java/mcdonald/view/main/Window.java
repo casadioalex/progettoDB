@@ -1,10 +1,12 @@
-package mcdonald.view;
+package mcdonald.view.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+
+import mcdonald.view.panels.LoginPanel;
 
 public class Window extends JFrame {
 
@@ -31,6 +33,8 @@ public class Window extends JFrame {
     }
 
     public void display() {
+        setContentPane(new LoginPanel());
+        setLocationByPlatform(true);
         setVisible(true);
     }
 

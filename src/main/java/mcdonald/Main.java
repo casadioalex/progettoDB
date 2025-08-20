@@ -3,7 +3,7 @@
  */
 package mcdonald;
 
-import mcdonald.view.Window;
+import mcdonald.view.main.Window;
 
 public class Main {
     public static void main(String[] args) {
