@@ -12,6 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import mcdonald.api.main.MainPanels;
+import mcdonald.view.main.Window;
 
 public class LoginPanel extends JPanel {
 
@@ -74,26 +78,37 @@ public class LoginPanel extends JPanel {
         loginButton = new JButton(LOGIN_BUTTON_TEXT);
         add(loginButton, gbc);
 
+        connectButtonActions();
+
+        // Calcola e applica gli insets in base al preferred size una sola volta
+        applyProportionalInsets();
     }
 
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        final Dimension size = getPreferredSize();
-        final var width = size.getWidth();
-        final var height = size.getHeight();
+    private void connectButtonActions() {
+        createAccountButton.addActionListener(e -> {
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.REGISTER);
+        });
+    }
 
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
+    private void applyProportionalInsets() {
+        final Dimension size = getPreferredSize();
+        final double width = size.getWidth();
+        final double height = size.getHeight();
+
+        Insets insets = new Insets(
+            (int) (height * HEIGHT_INSET_PROPORTION),
+            (int) (width * WIDTH_INSET_PROPORTION),
+            (int) (height * HEIGHT_INSET_PROPORTION),
+            (int) (width * WIDTH_INSET_PROPORTION)
+        );
 
         GridBagLayout layout = (GridBagLayout) getLayout();
         Arrays.stream(getComponents()).forEach(component -> {
-            gbc = layout.getConstraints(component);
-            gbc.insets = insets;
-            layout.setConstraints(component, gbc);
+            GridBagConstraints c = layout.getConstraints(component);
+            c.insets = insets;
+            layout.setConstraints(component, c);
         });
-
-        revalidate();
-        repaint();
     }
 
 }

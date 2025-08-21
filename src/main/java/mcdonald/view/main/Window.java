@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.view.panels.main.LoginPanel;
 import mcdonald.view.panels.main.RegisterPanel;
 
@@ -46,6 +47,12 @@ public class Window extends JFrame {
         setContentPane(panels.getFirst());
         setLocationByPlatform(true);
         setVisible(true);
+    }
+
+    public void switchMainPanel(MainPanels targetPanel) {
+        setContentPane(panels.get(targetPanel.ordinal()));
+        revalidate();
+        repaint();
     }
 
 }
