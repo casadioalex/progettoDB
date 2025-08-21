@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import mcdonald.view.panels.main.LoginPanel;
+import mcdonald.view.panels.main.OrderDetails;
 import mcdonald.view.panels.main.RegisterPanel;
 import mcdonald.view.panels.main.StaffHome;
 
@@ -51,9 +52,10 @@ public class Window extends JFrame {
         setIconImage(new ImageIcon(getClass().getResource(ICON_PATH)).getImage());
         setSize(getCustomSize());
 
-        panels.add(new StaffHome(orders));
+        panels.add(new OrderDetails(orders));
         panels.add(new LoginPanel());
         panels.add(new RegisterPanel());
+        panels.add(new StaffHome(orders));
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
