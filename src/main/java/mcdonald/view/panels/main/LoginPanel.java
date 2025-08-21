@@ -1,4 +1,4 @@
-package mcdonald.view.panels;
+package mcdonald.view.panels.main;
 
 import java.awt.Dimension;
 import java.awt.Font;

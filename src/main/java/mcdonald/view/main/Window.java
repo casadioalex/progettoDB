@@ -9,8 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import mcdonald.view.panels.LoginPanel;
-import mcdonald.view.panels.RegisterPanel;
+import mcdonald.view.panels.main.LoginPanel;
+import mcdonald.view.panels.main.RegisterPanel;
 
 public class Window extends JFrame {
 
