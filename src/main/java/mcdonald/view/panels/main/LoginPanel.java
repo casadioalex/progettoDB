@@ -1,11 +1,16 @@
 package mcdonald.view.panels.main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -15,7 +20,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import mcdonald.api.main.MainPanels;
+import mcdonald.model.common.QueryLoader;
 import mcdonald.view.main.Window;
 
 public class LoginPanel extends JPanel {
@@ -23,8 +31,8 @@ public class LoginPanel extends JPanel {
     private static final String TITLE = "LOGIN";
     private static final String EMAIL_LABEL_TEXT = "Email:";
     private static final String PASSWORD_LABEL_TEXT = "Password:";
-    private static final String LOGIN_BUTTON_TEXT = "Login";
-    private static final String CREATE_ACCOUNT_BUTTON_TEXT = "Create Account";
+    private static final String LOGIN_BUTTON_TEXT = "LOGIN";
+    private static final String CREATE_ACCOUNT_BUTTON_TEXT = "CREATE ACCOUNT";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -41,6 +49,7 @@ public class LoginPanel extends JPanel {
     private final JTextField passwordField;
     private final JButton loginButton;
     private final JButton createAccountButton;
+    private final JLabel errorMessage;
 
     public LoginPanel() {
         setLayout(new GridBagLayout());
@@ -79,6 +88,16 @@ public class LoginPanel extends JPanel {
         loginButton = new JButton(LOGIN_BUTTON_TEXT);
         add(loginButton, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        errorMessage = new JLabel();
+        errorMessage.setHorizontalAlignment(JLabel.CENTER);
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setVisible(false);
+        add(errorMessage, gbc);
+        gbc.gridwidth = 1;
+
         connectButtonActions();
         applyProportionalInsets();
     }
@@ -89,9 +108,12 @@ public class LoginPanel extends JPanel {
             window.switchMainPanel(MainPanels.REGISTER);
         });
 
-        loginButton.addActionListener(e -> {
-            
-        });
+        loginButton.addActionListener(e -> tryToLogin());
+    }
+
+    private String hashPassword(String password) {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        return hashedPassword;
     }
 
     private void tryToLogin() {
@@ -99,12 +121,27 @@ public class LoginPanel extends JPanel {
         String url = "jdbc:mysql://localhost:3306/" + database;
         String user_email = emailField.getText();
         String user_password = new String(((JPasswordField) passwordField).getPassword());
+        String hashedPassword = hashPassword(user_password);
 
-        try (Connection conn = DriverManager.getConnection(url, "root", "root")) {
-            String query = "SELECT * FROM "
+        try (Connection conn = DriverManager.getConnection(url, "root", "")) {
+            String query = QueryLoader.loadQuery("LOGIN");
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, user_email);
+                stmt.setString(2, hashedPassword);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    // TODO: Handle successful login
+                    System.out.println("Login successful");
+                } else {
+                    errorMessage.setText("Email or password is incorrect");
+                    errorMessage.setVisible(true);
+                }
+            }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("SQL error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
         }
     }
 

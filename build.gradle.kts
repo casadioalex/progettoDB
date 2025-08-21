@@ -30,6 +30,11 @@ dependencies {
     // SnakeYAML for YAML parsing
     implementation("org.yaml:snakeyaml:2.2")
 
+    // BCrypt for password hashing
+    implementation("org.mindrot:jbcrypt:0.4")
+    // MySQL Connector/J for MySQL database access
+    implementation("mysql:mysql-connector-java:8.0.33")
+
     /*
      * Simple Logging Facade for Java (SLF4J) with Apache Log4j
      * See: http://www.slf4j.org/

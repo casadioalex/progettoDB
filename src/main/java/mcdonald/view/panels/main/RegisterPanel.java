@@ -24,8 +24,8 @@ public class RegisterPanel extends JPanel {
     private static final String EMAIL_LABEL_TEXT = "Email:";
     private static final String PASSWORD_LABEL_TEXT = "Password:";
     private static final String ADDRESS_LABEL_TEXT = "Address:";
-    private static final String REGISTER_BUTTON_TEXT = "Register";
-    private static final String LOGIN_BUTTON_TEXT = "Login";
+    private static final String REGISTER_BUTTON_TEXT = "REGISTER";
+    private static final String LOGIN_BUTTON_TEXT = "LOGIN";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
