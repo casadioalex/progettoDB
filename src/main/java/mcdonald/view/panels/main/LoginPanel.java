@@ -79,8 +79,6 @@ public class LoginPanel extends JPanel {
         add(loginButton, gbc);
 
         connectButtonActions();
-
-        // Calcola e applica gli insets in base al preferred size una sola volta
         applyProportionalInsets();
     }
 

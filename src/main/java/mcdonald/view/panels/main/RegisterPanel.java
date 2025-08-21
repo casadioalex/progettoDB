@@ -96,8 +96,6 @@ public class RegisterPanel extends JPanel {
         add(registerButton, gbc);
 
         connectButtonActions();
-
-        // Calcola e applica gli insets in base al preferred size una sola volta
         applyProportionalInsets();
     }
 
