@@ -21,15 +21,15 @@ use MCDONALD;
 -- Tables Section
 -- _____________ 
 
-create table ADDRESS (
+create table ADDRESSES (
      street varchar(24) not null,
-     number numeric(4) not null,
+     number varchar(24) not null,
      city varchar(24) not null,
-     postalCode numeric(12) not null,
-     province varchar(2) not null,
-     email varchar(24) not null,
-     constraint IDADDRESS primary key (street, number, city),
-     constraint IDADDRESS_1_ID unique (email));
+     postalCode varchar(24) not null,
+     province varchar(24) not null,
+     user_email varchar(24) not null,
+     constraint IDADDRESSES primary key (street, number, city),
+     constraint IDADDRESSES_1_ID unique (user_email));
 
 create table ORDER_DETAILS (
      order_id int not null,
@@ -37,64 +37,110 @@ create table ORDER_DETAILS (
      quantity char(2) not null,
      constraint IDORDER_DETAILS primary key (order_id, product_name));
 
-create table INGREDIENT (
+create table INGREDIENTS (
      ingredient_id int not null auto_increment,
      name varchar(24) not null,
-     constraint IDINGREDIENT primary key (ingredient_id));
+     constraint IDINGREDIENTS primary key (ingredient_id));
 
-create table NUTRITIONAL_INFO (
+create table NUTRITIONAL_INFOS (
      product_name varchar(24) not null,
      calories numeric(5) not null,
      carbohydrates numeric(5) not null,
      proteins numeric(5) not null,
      fats numeric(5) not null,
-     constraint IDNUTRITIONAL_INFO_ID primary key (product_name));
+     constraint IDNUTRITIONAL_INFOS_ID primary key (product_name));
 
-create table `ORDER` (
+create table ORDERS (
      order_id int not null auto_increment,
      price numeric(5,2) not null,
      order_date date not null,
      user_email varchar(24) not null,
      address varchar(24) not null,
      completed boolean not null default false,
-     constraint IDORDER primary key (order_id),
-     constraint IDORDER_1 unique (address));
+     constraint IDORDERS primary key (order_id),
+     constraint IDORDERS_1 unique (address));
 
-create table PRODUCT (
+create table PRODUCTS (
      name varchar(24) not null,
-     constraint IDPRODUCT primary key (name));
+     constraint IDPRODUCTS primary key (name));
 
-create table REVIEW (
+create table REVIEWS (
      review_id int not null auto_increment,
      comment varchar(200) not null,
      vote numeric(1) not null,
      review_date date not null,
-     constraint IDREVIEW primary key (review_id));
+     constraint IDREVIEWS primary key (review_id));
 
-create table USER (
+create table USERS (
      username varchar(24) not null,
      name varchar(24) not null,
-     surename varchar(24) not null,
+     surname varchar(24) not null,
      email varchar(24) not null,
-     password varchar(24) not null,
+     password varchar(256) not null,
      registrationDate date not null,
      role enum('CLIENT', 'STAFF', 'ADMIN') not null default 'CLIENT',
      blocked boolean not null default false,
-     constraint IDUSER primary key (email));
+     constraint IDUSERS primary key (email));
 
 
 -- Constraints Section
 -- ___________________ 
 
-alter table ADDRESS add constraint IDADDRESS_1_FK
-     foreign key (email)
-     references USER(email);
+alter table ADDRESSES add constraint IDADDRESSES_1_FK
+     foreign key (user_email)
+     references USERS(email);
 
-alter table NUTRITIONAL_INFO add constraint IDNUTRITIONAL_INFO_FK
+alter table NUTRITIONAL_INFOS add constraint IDNUTRITIONAL_INFOS_FK
      foreign key (product_name)
-     references PRODUCT(name);
+     references PRODUCTS(name);
 
 
 -- Index Section
 -- _____________ 
 
+-- USERS table population
+INSERT INTO USERS (username, name, surname, email, password, registrationDate, role, blocked) VALUES
+('mrossi', 'Mario', 'Rossi', 'mario.rossi@email.com', 'c4cb8b3fae0fa9eabf8a91e84b1c7cfcfa2c3e0b1b2c2a1a3e6a0a1a5e6a2e3e', '2024-01-10', 'CLIENT', false),
+('lbianchi', 'Luca', 'Bianchi', 'luca.bianchi@email.com', '6cb75f652a9b52798eb6cf2201057c73e0679d741c7c252f7d7c1e03c6d5e7c6', '2024-02-15', 'STAFF', false),
+('admin', 'Admin', 'McDonald', 'admin@mcdonald.com', '713bfda78870bf9d1b261f565286f85e97ee614efe5f0faf7c34e7ca4f65baca', '2023-12-01', 'ADMIN', false);
+
+-- ADDRESSES table population
+INSERT INTO ADDRESSES (street, number, city, postalCode, province, user_email) VALUES
+('Via Roma', 10, 'Milano', 20100, 'MI', 'mario.rossi@email.com'),
+('Corso Italia', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com');
+
+-- PRODUCTS table population
+INSERT INTO PRODUCTS (name) VALUES
+('Big Mac'),
+('McChicken'),
+('Patatine');
+
+-- INGREDIENTS table population
+INSERT INTO INGREDIENTS (name) VALUES
+('Pane'),
+('Carne'),
+('Insalata'),
+('Formaggio'),
+('Patate');
+
+-- NUTRITIONAL_INFOS table population
+INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, fats) VALUES
+('Big Mac', 500, 45, 25, 28),
+('McChicken', 400, 40, 20, 18),
+('Patatine', 300, 35, 4, 15);
+
+-- ORDERS table population
+INSERT INTO ORDERS (price, order_date, user_email, address, completed) VALUES
+(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', true),
+(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', false);
+
+-- ORDER_DETAILS table population
+INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
+(1, 'Big Mac', '2'),
+(1, 'Patatine', '1'),
+(2, 'McChicken', '1');
+
+-- REVIEWS table population
+INSERT INTO REVIEWS (comment, vote, review_date) VALUES
+('Ottimo servizio!', 5, '2024-08-03'),
+('Panino buono ma attesa lunga.', 3, '2024-08-04');

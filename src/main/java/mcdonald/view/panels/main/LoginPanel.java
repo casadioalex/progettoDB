@@ -1,10 +1,16 @@
 package mcdonald.view.panels.main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -12,14 +18,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import mcdonald.api.main.MainPanels;
+import mcdonald.model.common.HashingUtil;
+import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
 public class LoginPanel extends JPanel {
 
     private static final String TITLE = "LOGIN";
     private static final String EMAIL_LABEL_TEXT = "Email:";
     private static final String PASSWORD_LABEL_TEXT = "Password:";
-    private static final String LOGIN_BUTTON_TEXT = "Login";
-    private static final String CREATE_ACCOUNT_BUTTON_TEXT = "Create Account";
+    private static final String LOGIN_BUTTON_TEXT = "LOGIN";
+    private static final String CREATE_ACCOUNT_BUTTON_TEXT = "CREATE ACCOUNT";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -36,6 +48,7 @@ public class LoginPanel extends JPanel {
     private final JTextField passwordField;
     private final JButton loginButton;
     private final JButton createAccountButton;
+    private final JLabel errorMessage;
 
     public LoginPanel() {
         setLayout(new GridBagLayout());
@@ -71,29 +84,87 @@ public class LoginPanel extends JPanel {
         createAccountButton = new JButton(CREATE_ACCOUNT_BUTTON_TEXT);
         add(createAccountButton, gbc);
         gbc.gridx++;
+
         loginButton = new JButton(LOGIN_BUTTON_TEXT);
         add(loginButton, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        errorMessage = new JLabel();
+        errorMessage.setHorizontalAlignment(JLabel.CENTER);
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setVisible(false);
+        add(errorMessage, gbc);
+        gbc.gridwidth = 1;
+
+        connectButtonActions();
+        applyProportionalInsets();
     }
 
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        final Dimension size = getPreferredSize();
-        final var width = size.getWidth();
-        final var height = size.getHeight();
+    private void connectButtonActions() {
+        createAccountButton.addActionListener(e -> {
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.REGISTER);
+        });
 
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
+        loginButton.addActionListener(e -> tryToLogin());
+    }
+
+    private void tryToLogin() {
+        String database = "mcdonald";
+        String url = "jdbc:mysql://localhost:3306/" + database;
+        String db_email = "root";
+        String db_password = "";
+        String user_email = emailField.getText();
+        String user_password = new String(((JPasswordField) passwordField).getPassword());
+
+        try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
+            String query = QueryLoader.loadQuery("LOGIN");
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, user_email);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String storedHash = rs.getString("password");
+                    if (HashingUtil.checkPassword(user_password, storedHash)) {
+                        // TODO: Handle successful login
+                        System.out.println("Login successful");
+                        errorMessage.setVisible(false);
+                    } else {
+                        errorMessage.setText("Email or password is incorrect");
+                        errorMessage.setVisible(true);
+                    }
+                } else {
+                    errorMessage.setText("Email or password is incorrect");
+                    errorMessage.setVisible(true);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void applyProportionalInsets() {
+        final Dimension size = getPreferredSize();
+        final double width = size.getWidth();
+        final double height = size.getHeight();
+
+        Insets insets = new Insets(
+            (int) (height * HEIGHT_INSET_PROPORTION),
+            (int) (width * WIDTH_INSET_PROPORTION),
+            (int) (height * HEIGHT_INSET_PROPORTION),
+            (int) (width * WIDTH_INSET_PROPORTION)
+        );
 
         GridBagLayout layout = (GridBagLayout) getLayout();
         Arrays.stream(getComponents()).forEach(component -> {
-            gbc = layout.getConstraints(component);
-            gbc.insets = insets;
-            layout.setConstraints(component, gbc);
+            GridBagConstraints c = layout.getConstraints(component);
+            c.insets = insets;
+            layout.setConstraints(component, c);
         });
-
-        revalidate();
-        repaint();
     }
 
 }
