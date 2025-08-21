@@ -21,15 +21,15 @@ use MCDONALD;
 -- Tables Section
 -- _____________ 
 
-create table ADDRESS (
+create table ADDRESSES (
      street varchar(24) not null,
      number numeric(4) not null,
      city varchar(24) not null,
      postalCode numeric(12) not null,
      province varchar(2) not null,
      email varchar(24) not null,
-     constraint IDADDRESS primary key (street, number, city),
-     constraint IDADDRESS_1_ID unique (email));
+     constraint IDADDRESSES primary key (street, number, city),
+     constraint IDADDRESSES_1_ID unique (email));
 
 create table ORDER_DETAILS (
      order_id int not null,
@@ -37,41 +37,41 @@ create table ORDER_DETAILS (
      quantity char(2) not null,
      constraint IDORDER_DETAILS primary key (order_id, product_name));
 
-create table INGREDIENT (
+create table INGREDIENTS (
      ingredient_id int not null auto_increment,
      name varchar(24) not null,
-     constraint IDINGREDIENT primary key (ingredient_id));
+     constraint IDINGREDIENTS primary key (ingredient_id));
 
-create table NUTRITIONAL_INFO (
+create table NUTRITIONAL_INFOS (
      product_name varchar(24) not null,
      calories numeric(5) not null,
      carbohydrates numeric(5) not null,
      proteins numeric(5) not null,
      fats numeric(5) not null,
-     constraint IDNUTRITIONAL_INFO_ID primary key (product_name));
+     constraint IDNUTRITIONAL_INFOS_ID primary key (product_name));
 
-create table `ORDER` (
+create table ORDERS (
      order_id int not null auto_increment,
      price numeric(5,2) not null,
      order_date date not null,
      user_email varchar(24) not null,
      address varchar(24) not null,
      completed boolean not null default false,
-     constraint IDORDER primary key (order_id),
-     constraint IDORDER_1 unique (address));
+     constraint IDORDERS primary key (order_id),
+     constraint IDORDERS_1 unique (address));
 
-create table PRODUCT (
+create table PRODUCTS (
      name varchar(24) not null,
-     constraint IDPRODUCT primary key (name));
+     constraint IDPRODUCTS primary key (name));
 
-create table REVIEW (
+create table REVIEWS (
      review_id int not null auto_increment,
      comment varchar(200) not null,
      vote numeric(1) not null,
      review_date date not null,
-     constraint IDREVIEW primary key (review_id));
+     constraint IDREVIEWS primary key (review_id));
 
-create table USER (
+create table USERS (
      username varchar(24) not null,
      name varchar(24) not null,
      surename varchar(24) not null,
@@ -80,19 +80,19 @@ create table USER (
      registrationDate date not null,
      role enum('CLIENT', 'STAFF', 'ADMIN') not null default 'CLIENT',
      blocked boolean not null default false,
-     constraint IDUSER primary key (email));
+     constraint IDUSERS primary key (email));
 
 
 -- Constraints Section
 -- ___________________ 
 
-alter table ADDRESS add constraint IDADDRESS_1_FK
+alter table ADDRESSES add constraint IDADDRESSES_1_FK
      foreign key (email)
-     references USER(email);
+     references USERS(email);
 
-alter table NUTRITIONAL_INFO add constraint IDNUTRITIONAL_INFO_FK
+alter table NUTRITIONAL_INFOS add constraint IDNUTRITIONAL_INFOS_FK
      foreign key (product_name)
-     references PRODUCT(name);
+     references PRODUCTS(name);
 
 
 -- Index Section

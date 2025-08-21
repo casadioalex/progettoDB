@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.DriverManager;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -87,6 +88,24 @@ public class LoginPanel extends JPanel {
             Window window = (Window) SwingUtilities.getWindowAncestor(this);
             window.switchMainPanel(MainPanels.REGISTER);
         });
+
+        loginButton.addActionListener(e -> {
+            
+        });
+    }
+
+    private void tryToLogin() {
+        String database = "mcdonald";
+        String url = "jdbc:mysql://localhost:3306/" + database;
+        String user_email = emailField.getText();
+        String user_password = new String(((JPasswordField) passwordField).getPassword());
+
+        try (Connection conn = DriverManager.getConnection(url, "root", "root")) {
+            String query = "SELECT * FROM "
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void applyProportionalInsets() {
