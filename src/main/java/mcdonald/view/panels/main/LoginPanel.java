@@ -20,9 +20,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import mcdonald.api.main.MainPanels;
+import mcdonald.model.common.HashingUtil;
 import mcdonald.model.common.QueryLoader;
 import mcdonald.view.main.Window;
 
@@ -85,6 +84,7 @@ public class LoginPanel extends JPanel {
         createAccountButton = new JButton(CREATE_ACCOUNT_BUTTON_TEXT);
         add(createAccountButton, gbc);
         gbc.gridx++;
+
         loginButton = new JButton(LOGIN_BUTTON_TEXT);
         add(loginButton, gbc);
 
@@ -111,27 +111,29 @@ public class LoginPanel extends JPanel {
         loginButton.addActionListener(e -> tryToLogin());
     }
 
-    private String hashPassword(String password) {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        return hashedPassword;
-    }
-
     private void tryToLogin() {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
+        String db_email = "root";
+        String db_password = "";
         String user_email = emailField.getText();
         String user_password = new String(((JPasswordField) passwordField).getPassword());
-        String hashedPassword = hashPassword(user_password);
 
-        try (Connection conn = DriverManager.getConnection(url, "root", "")) {
+        try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("LOGIN");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setString(1, user_email);
-                stmt.setString(2, hashedPassword);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    // TODO: Handle successful login
-                    System.out.println("Login successful");
+                    String storedHash = rs.getString("password");
+                    if (HashingUtil.checkPassword(user_password, storedHash)) {
+                        // TODO: Handle successful login
+                        System.out.println("Login successful");
+                        errorMessage.setVisible(false);
+                    } else {
+                        errorMessage.setText("Email or password is incorrect");
+                        errorMessage.setVisible(true);
+                    }
                 } else {
                     errorMessage.setText("Email or password is incorrect");
                     errorMessage.setVisible(true);
