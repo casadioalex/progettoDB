@@ -38,9 +38,8 @@ create table ORDER_DETAILS (
      constraint IDORDER_DETAILS primary key (order_id, product_name));
 
 create table INGREDIENTS (
-     ingredient_id int not null auto_increment,
      name varchar(24) not null,
-     constraint IDINGREDIENTS primary key (ingredient_id));
+     constraint IDINGREDIENTS primary key (name));
 
 create table NUTRITIONAL_INFOS (
      product_name varchar(24) not null,
@@ -55,7 +54,9 @@ create table ORDERS (
      price numeric(5,2) not null,
      order_date date not null,
      user_email varchar(24) not null,
-     address varchar(24) not null,
+     address_street varchar(24) not null,
+     address_number varchar(24) not null,
+     address_city varchar(24) not null,
      completed boolean not null default false,
      constraint IDORDERS primary key (order_id)
 );
@@ -69,6 +70,7 @@ create table REVIEWS (
      comment varchar(200) not null,
      vote numeric(1) not null,
      review_date date not null,
+     user_email varchar(24) not null,
      constraint IDREVIEWS primary key (review_id));
 
 create table USERS (
@@ -90,9 +92,29 @@ alter table ADDRESSES add constraint IDADDRESSES_1_FK
      foreign key (user_email)
      references USERS(email);
 
+alter table ORDERS add constraint FK_ORDERS_ADDRESSES
+     foreign key (address_street, address_number, address_city)
+     references ADDRESSES(street, number, city);
+
+alter table ORDERS add constraint IDORDERS_FK
+     foreign key (user_email)
+     references USERS(email);
+
+alter table ORDER_DETAILS add constraint IDORDER_DETAILS_FK
+     foreign key (order_id)
+     references ORDERS(order_id);
+
+alter table ORDER_DETAILS add constraint IDORDER_DETAILS_1_FK
+     foreign key (product_name)
+     references PRODUCTS(name);
+
 alter table NUTRITIONAL_INFOS add constraint IDNUTRITIONAL_INFOS_FK
      foreign key (product_name)
      references PRODUCTS(name);
+
+alter table REVIEWS add constraint IDREVIEWS_FK
+     foreign key (user_email)
+     references USERS(email);
 
 
 -- Index Section
@@ -130,10 +152,10 @@ INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, 
 ('Patatine', 300, 35, 4, 15);
 
 -- ORDERS table population
-INSERT INTO ORDERS (price, order_date, user_email, address, completed) VALUES
-(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', true),
-(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', false),
-(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', false);
+INSERT INTO ORDERS (price, order_date, user_email, address_street, address_number, address_city, completed) VALUES
+(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', true),
+(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', '5', 'Roma', false),
+(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', false);
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
@@ -142,6 +164,6 @@ INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
 (2, 'McChicken', '1');
 
 -- REVIEWS table population
-INSERT INTO REVIEWS (comment, vote, review_date) VALUES
-('Ottimo servizio!', 5, '2024-08-03'),
-('Panino buono ma attesa lunga.', 3, '2024-08-04');
+INSERT INTO REVIEWS (comment, vote, review_date, user_email) VALUES
+('Ottimo servizio!', 5, '2024-08-03', 'mario.rossi@email.com'),
+('Panino buono ma attesa lunga.', 3, '2024-08-04', 'luca.bianchi@email.com');
