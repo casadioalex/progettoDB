@@ -1,4 +1,4 @@
-package mcdonald.view.panels.main;
+package mcdonald.view.panels.home.admin;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -6,19 +6,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
-import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
-public class StaffMenu extends JPanel {
-    private static final String TITLE = "STAFF MENU";
-    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
-    private static final String NEW_STAFF_BUTTON_TEXT = "NEW STAFF MEMBER";
+public class StaffDetail extends JPanel {
+    private static final String TITLE = "STAFF DETAILS";
+    private static final String BACK_BUTTON_TEXT = "BACK TO STAFF MENU";
+    private static final String REMOVE_STAFF_BUTTON_TEXT = "REMOVE STAFF MEMBER";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -30,10 +26,9 @@ public class StaffMenu extends JPanel {
     private GridBagConstraints gbc = new GridBagConstraints();
 
     private final JButton backButton;
-    private final JButton newStaffButton;
-    private final JPanel staffPanel;
+    private final JButton removeStaffButton;
 
-    public StaffMenu(List<String> staff) {
+    public StaffDetail() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -45,25 +40,6 @@ public class StaffMenu extends JPanel {
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
-     
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-
-        staffPanel = new JPanel();
-        staffPanel.setLayout(new BoxLayout(staffPanel, BoxLayout.Y_AXIS));
-
-        for (String member : staff) {
-            JButton staffButton = new JButton(member);
-            staffButton.addActionListener(e -> apriOrdine(member));
-            staffPanel.add(staffButton);
-        }
-
-        JScrollPane scrollPane = new JScrollPane(staffPanel);
-        scrollPane.setPreferredSize(new Dimension(500, 300));
-
-        add(scrollPane, gbc);
-
 
         gbc.gridwidth = 1;
         gbc.gridx = 0;
@@ -75,15 +51,9 @@ public class StaffMenu extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridx++;
         gbc.weightx = 0.5;
-        newStaffButton = new JButton(NEW_STAFF_BUTTON_TEXT);
-        add(newStaffButton, gbc);
+        removeStaffButton = new JButton(REMOVE_STAFF_BUTTON_TEXT);
+        add(removeStaffButton, gbc);
     }
-
-    private void apriOrdine(String order) {
-        // Qui puoi aprire un nuovo JFrame o JPanel con i dettagli dell’ordine
-        JOptionPane.showMessageDialog(this, "Hai aperto: " + order);
-    }
-
     @Override
     public void addNotify() {
         super.addNotify();

@@ -1,4 +1,4 @@
-package mcdonald.view.panels.main;
+package mcdonald.view.panels.home.admin;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,10 +15,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class StaffHome extends JPanel {
-
-    private static final String TITLE = "STAFF HOME";
-    private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
+public class StaffMenu extends JPanel {
+    private static final String TITLE = "STAFF MENU";
+    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
+    private static final String NEW_STAFF_BUTTON_TEXT = "NEW STAFF MEMBER";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -29,10 +29,11 @@ public class StaffHome extends JPanel {
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
-    private final JButton logoutButton;
-    private final JPanel ordersPanel;
-    
-    public StaffHome(List<String> orders) {
+    private final JButton backButton;
+    private final JButton newStaffButton;
+    private final JPanel staffPanel;
+
+    public StaffMenu(List<String> staff) {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -49,26 +50,33 @@ public class StaffHome extends JPanel {
         gbc.gridy++;
         gbc.gridwidth = 2;
 
-        ordersPanel = new JPanel();
-        ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
+        staffPanel = new JPanel();
+        staffPanel.setLayout(new BoxLayout(staffPanel, BoxLayout.Y_AXIS));
 
-        for (String order : orders) {
-            JButton orderButton = new JButton(order);
-            orderButton.addActionListener(e -> apriOrdine(order));
-            ordersPanel.add(orderButton);
+        for (String member : staff) {
+            JButton staffButton = new JButton(member);
+            staffButton.addActionListener(e -> apriOrdine(member));
+            staffPanel.add(staffButton);
         }
 
-        JScrollPane scrollPane = new JScrollPane(ordersPanel);
+        JScrollPane scrollPane = new JScrollPane(staffPanel);
         scrollPane.setPreferredSize(new Dimension(500, 300));
 
         add(scrollPane, gbc);
 
 
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy++;
-        logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
-        add(logoutButton, gbc);
+        gbc.weightx = 0.5;
+        backButton = new JButton(BACK_BUTTON_TEXT);
+        add(backButton, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridx++;
+        gbc.weightx = 0.5;
+        newStaffButton = new JButton(NEW_STAFF_BUTTON_TEXT);
+        add(newStaffButton, gbc);
     }
 
     private void apriOrdine(String order) {
@@ -83,7 +91,8 @@ public class StaffHome extends JPanel {
         final var width = size.getWidth();
         final var height = size.getHeight();
 
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
+        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION),
+                (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
 
         GridBagLayout layout = (GridBagLayout) getLayout();
         Arrays.stream(getComponents()).forEach(component -> {

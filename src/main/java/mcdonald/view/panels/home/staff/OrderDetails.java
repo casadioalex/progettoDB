@@ -1,4 +1,4 @@
-package mcdonald.view.panels.main;
+package mcdonald.view.panels.home.staff;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -11,10 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class StaffDetail extends JPanel {
-    private static final String TITLE = "STAFF DETAILS";
-    private static final String BACK_BUTTON_TEXT = "BACK TO STAFF MENU";
-    private static final String REMOVE_STAFF_BUTTON_TEXT = "REMOVE STAFF MEMBER";
+public class OrderDetails extends JPanel {
+    private static final String TITLE = "ORDER DETAILS";
+    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
+    private static final String COMPLETE_ORDER_BUTTON_TEXT = "COMPLETE ORDER";
+
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -26,9 +27,9 @@ public class StaffDetail extends JPanel {
     private GridBagConstraints gbc = new GridBagConstraints();
 
     private final JButton backButton;
-    private final JButton removeStaffButton;
+    private final JButton completeOrderButton;
 
-    public StaffDetail() {
+    public OrderDetails() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -41,6 +42,7 @@ public class StaffDetail extends JPanel {
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
 
+
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy++;
@@ -51,9 +53,10 @@ public class StaffDetail extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridx++;
         gbc.weightx = 0.5;
-        removeStaffButton = new JButton(REMOVE_STAFF_BUTTON_TEXT);
-        add(removeStaffButton, gbc);
+        completeOrderButton = new JButton(COMPLETE_ORDER_BUTTON_TEXT);
+        add(completeOrderButton, gbc);
     }
+
     @Override
     public void addNotify() {
         super.addNotify();

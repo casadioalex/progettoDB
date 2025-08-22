@@ -1,10 +1,16 @@
-package mcdonald.view.panels.main;
+package mcdonald.view.panels.home.staff;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,11 +21,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class OrderDetails extends JPanel {
-    private static final String TITLE = "ORDER DETAILS";
-    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
-    private static final String COMPLETE_ORDER_BUTTON_TEXT = "COMPLETE ORDER";
+import mcdonald.model.common.QueryLoader;
 
+public class StaffHome extends JPanel {
+
+    private static final String TITLE = "STAFF HOME";
+    private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -30,11 +37,13 @@ public class OrderDetails extends JPanel {
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
-    private final JButton backButton;
-    private final JButton completeOrderButton;
+    private final JButton logoutButton;
     private final JPanel ordersPanel;
+    private final List<Integer> ordersIds = new ArrayList<>();
 
-    public OrderDetails(List<String> orders) {
+
+    
+    public StaffHome() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -53,10 +62,13 @@ public class OrderDetails extends JPanel {
 
         ordersPanel = new JPanel();
         ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
-
-        for (String order : orders) {
+        getOrdersIds();
+        for (int orderid : ordersIds) {
+            String order = String.valueOf(orderid);
             JButton orderButton = new JButton(order);
-            orderButton.addActionListener(e -> apriOrdine(order));
+            orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+            orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
+            orderButton.addActionListener(e -> apriOrdine(orderid));
             ordersPanel.add(orderButton);
         }
 
@@ -66,23 +78,38 @@ public class OrderDetails extends JPanel {
         add(scrollPane, gbc);
 
 
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.weightx = 0.5;
-        backButton = new JButton(BACK_BUTTON_TEXT);
-        add(backButton, gbc);
-
-        gbc.gridwidth = 1;
-        gbc.gridx++;
-        gbc.weightx = 0.5;
-        completeOrderButton = new JButton(COMPLETE_ORDER_BUTTON_TEXT);
-        add(completeOrderButton, gbc);
+        logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
+        add(logoutButton, gbc);
     }
 
-    private void apriOrdine(String order) {
+    private void apriOrdine(int orderid) {
         // Qui puoi aprire un nuovo JFrame o JPanel con i dettagli dell’ordine
-        JOptionPane.showMessageDialog(this, "Hai aperto: " + order);
+        JOptionPane.showMessageDialog(this, "Hai aperto: " + orderid);
+    }
+
+    private void getOrdersIds() {
+        String database = "mcdonald";
+        String url = "jdbc:mysql://localhost:3306/" + database;
+        String db_email = "root";
+        String db_password = "";
+
+        try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
+            String query = QueryLoader.loadQuery("GET_UNCOMPLETED_ORDERS");
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    int order_id = rs.getInt("order_id"); 
+                    ordersIds.add(order_id);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -92,8 +119,7 @@ public class OrderDetails extends JPanel {
         final var width = size.getWidth();
         final var height = size.getHeight();
 
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION),
-                (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
+        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
 
         GridBagLayout layout = (GridBagLayout) getLayout();
         Arrays.stream(getComponents()).forEach(component -> {
