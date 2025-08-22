@@ -46,10 +46,7 @@ public class StaffMenu extends JPanel {
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
      
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
-
         staffPanel = new JPanel();
         staffPanel.setLayout(new BoxLayout(staffPanel, BoxLayout.Y_AXIS));
 
@@ -66,15 +63,12 @@ public class StaffMenu extends JPanel {
 
 
         gbc.gridwidth = 1;
-        gbc.gridx = 0;
         gbc.gridy++;
         gbc.weightx = 0.5;
         backButton = new JButton(BACK_BUTTON_TEXT);
         add(backButton, gbc);
 
-        gbc.gridwidth = 1;
         gbc.gridx++;
-        gbc.weightx = 0.5;
         newStaffButton = new JButton(NEW_STAFF_BUTTON_TEXT);
         add(newStaffButton, gbc);
     }

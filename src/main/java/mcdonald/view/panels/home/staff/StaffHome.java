@@ -56,10 +56,7 @@ public class StaffHome extends JPanel {
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
      
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
-
         ordersPanel = new JPanel();
         ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
         getOrdersIds();
@@ -78,8 +75,6 @@ public class StaffHome extends JPanel {
         add(scrollPane, gbc);
 
 
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
         gbc.gridy++;
         logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
         add(logoutButton, gbc);
