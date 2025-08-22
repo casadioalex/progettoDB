@@ -164,21 +164,21 @@ public class RegisterPanel extends JPanel {
         // Buttons
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 3;
-        gbc.weightx = 0.5;
+        gbc.gridwidth = 2;
         loginButton = new JButton(LOGIN_BUTTON_TEXT);
         add(loginButton, gbc);
-        gbc.gridx = 3;
+        gbc.gridx = 2;
         registerButton = new JButton(REGISTER_BUTTON_TEXT);
         add(registerButton, gbc);
-        gbc.gridwidth = 1;
 
         errorMessage = new JLabel();
+        errorMessage.setHorizontalAlignment(JLabel.CENTER);
         errorMessage.setForeground(Color.RED);
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 6;
         add(errorMessage, gbc);
+        gbc.gridwidth = 1;
 
         connectButtonActions();
         applyProportionalInsets();
