@@ -28,8 +28,7 @@ create table ADDRESSES (
      postalCode varchar(24) not null,
      province varchar(24) not null,
      user_email varchar(24) not null,
-     constraint IDADDRESSES primary key (street, number, city)
-);
+     constraint IDADDRESSES primary key (street, number, city));
 
 create table ORDER_DETAILS (
      order_id int not null,
@@ -58,8 +57,7 @@ create table ORDERS (
      address_number varchar(24) not null,
      address_city varchar(24) not null,
      completed boolean not null default false,
-     constraint IDORDERS primary key (order_id)
-);
+     constraint IDORDERS primary key (order_id));
 
 create table PRODUCTS (
      name varchar(24) not null,
@@ -129,6 +127,7 @@ INSERT INTO USERS (username, name, surname, email, password, registrationDate, r
 -- ADDRESSES table population
 INSERT INTO ADDRESSES (street, number, city, postalCode, province, user_email) VALUES
 ('Via Roma', 10, 'Milano', 20100, 'MI', 'mario.rossi@email.com'),
+('Via Roma', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com'),
 ('Corso Italia', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com');
 
 -- PRODUCTS table population
