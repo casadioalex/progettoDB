@@ -28,8 +28,8 @@ create table ADDRESSES (
      postalCode varchar(24) not null,
      province varchar(24) not null,
      user_email varchar(24) not null,
-     constraint IDADDRESSES primary key (street, number, city),
-     constraint IDADDRESSES_1_ID unique (user_email));
+     constraint IDADDRESSES primary key (street, number, city)
+);
 
 create table ORDER_DETAILS (
      order_id int not null,
@@ -57,8 +57,8 @@ create table ORDERS (
      user_email varchar(24) not null,
      address varchar(24) not null,
      completed boolean not null default false,
-     constraint IDORDERS primary key (order_id),
-     constraint IDORDERS_1 unique (address));
+     constraint IDORDERS primary key (order_id)
+);
 
 create table PRODUCTS (
      name varchar(24) not null,
@@ -132,7 +132,8 @@ INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, 
 -- ORDERS table population
 INSERT INTO ORDERS (price, order_date, user_email, address, completed) VALUES
 (8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', true),
-(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', false);
+(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', false),
+(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', false);
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES

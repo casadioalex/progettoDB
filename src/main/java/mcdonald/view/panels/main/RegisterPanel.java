@@ -260,6 +260,7 @@ public class RegisterPanel extends JPanel {
 
         } catch (SQLException e) {
             System.err.println("SQL error: " + e.getMessage());
+            
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
