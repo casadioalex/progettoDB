@@ -63,6 +63,11 @@ create table PRODUCTS (
      name varchar(24) not null,
      constraint IDPRODUCTS primary key (name));
 
+create table PRODUCT_INGREDIENTS (
+     product_name varchar(24) not null,
+     ingredient_name varchar(24) not null,
+     constraint IDPRODUCT_INGREDIENTS primary key (product_name, ingredient_name));
+
 create table REVIEWS (
      review_id int not null auto_increment,
      comment varchar(200) not null,
@@ -114,6 +119,14 @@ alter table REVIEWS add constraint IDREVIEWS_FK
      foreign key (user_email)
      references USERS(email);
 
+alter table PRODUCT_INGREDIENTS add constraint FK_PRODUCT_INGREDIENTS_PRODUCTS
+     foreign key (product_name)
+     references PRODUCTS(name);
+
+alter table PRODUCT_INGREDIENTS add constraint FK_PRODUCT_INGREDIENTS_INGREDIENTS
+     foreign key (ingredient_name)
+     references INGREDIENTS(name);
+
 
 -- Index Section
 -- _____________ 
@@ -143,6 +156,17 @@ INSERT INTO INGREDIENTS (name) VALUES
 ('Insalata'),
 ('Formaggio'),
 ('Patate');
+
+-- PRODUCT_INGREDIENTS table population
+INSERT INTO PRODUCT_INGREDIENTS (product_name, ingredient_name) VALUES
+('Big Mac', 'Pane'),
+('Big Mac', 'Carne'),
+('Big Mac', 'Insalata'),
+('Big Mac', 'Formaggio'),
+('McChicken', 'Pane'),
+('McChicken', 'Carne'),
+('McChicken', 'Insalata'),
+('Patatine', 'Patate');
 
 -- NUTRITIONAL_INFOS table population
 INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, fats) VALUES

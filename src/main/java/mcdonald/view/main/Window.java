@@ -51,6 +51,7 @@ public class Window extends JFrame {
         setContentPane(panels.getFirst());
         setLocationByPlatform(true);
         setVisible(true);
+        setResizable(false);
     }
 
     public void switchMainPanel(MainPanels targetPanel) {

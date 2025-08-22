@@ -26,7 +26,7 @@ import mcdonald.view.main.Window;
 
 public class ClientHomePanel extends JPanel {
 
-    private static final String TITLE = "Client Home";
+    private static final String TITLE = "CLIENT HOME";
     private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
     private static final String NEW_ORDER_BUTTON_TEXT = "NEW ORDER";
 
