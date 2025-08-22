@@ -63,6 +63,11 @@ create table PRODUCTS (
      name varchar(24) not null,
      constraint IDPRODUCTS primary key (name));
 
+create table PRODUCT_INGREDIENTS (
+     product_name varchar(24) not null,
+     ingredient_name varchar(24) not null,
+     constraint IDPRODUCT_INGREDIENTS primary key (product_name, ingredient_name));
+
 create table REVIEWS (
      review_id int not null auto_increment,
      comment varchar(200) not null,
@@ -114,6 +119,14 @@ alter table REVIEWS add constraint IDREVIEWS_FK
      foreign key (user_email)
      references USERS(email);
 
+alter table PRODUCT_INGREDIENTS add constraint FK_PRODUCT_INGREDIENTS_PRODUCTS
+     foreign key (product_name)
+     references PRODUCTS(name);
+
+alter table PRODUCT_INGREDIENTS add constraint FK_PRODUCT_INGREDIENTS_INGREDIENTS
+     foreign key (ingredient_name)
+     references INGREDIENTS(name);
+
 
 -- Index Section
 -- _____________ 
@@ -144,6 +157,17 @@ INSERT INTO INGREDIENTS (name) VALUES
 ('Formaggio'),
 ('Patate');
 
+-- PRODUCT_INGREDIENTS table population
+INSERT INTO PRODUCT_INGREDIENTS (product_name, ingredient_name) VALUES
+('Big Mac', 'Pane'),
+('Big Mac', 'Carne'),
+('Big Mac', 'Insalata'),
+('Big Mac', 'Formaggio'),
+('McChicken', 'Pane'),
+('McChicken', 'Carne'),
+('McChicken', 'Insalata'),
+('Patatine', 'Patate');
+
 -- NUTRITIONAL_INFOS table population
 INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, fats) VALUES
 ('Big Mac', 500, 45, 25, 28),
@@ -154,7 +178,7 @@ INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, 
 INSERT INTO ORDERS (price, order_date, user_email, address_street, address_number, address_city, completed) VALUES
 (8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', true),
 (6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', '5', 'Roma', false),
-(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', false);
+(8.50, '2024-08-08', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', false);
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
