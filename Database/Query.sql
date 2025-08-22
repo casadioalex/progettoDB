@@ -18,13 +18,15 @@ INSERT INTO USERS (username, name, surname, email, password, registrationDate) V
 INSERT INTO ADDRESSES (street, number, city, postalCode, province, user_email) VALUES (?, ?, ?, ?, ?, ?);
 
 /*
+    Query to get all orders id 
+*/
+-- GET_ALL_ORDERS
+SELECT order_id, completed, order_date FROM ORDERS WHERE user_email = ? ORDER BY completed ASC, order_date DESC;
+
+/*
     Query to get all uncompleted orders
 */
 -- GET_UNCOMPLETED_ORDERS
 SELECT order_id
 FROM ORDERS
 WHERE completed = 0;
-
-/*
-    
-*/
