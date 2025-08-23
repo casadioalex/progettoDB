@@ -18,7 +18,7 @@ public class Window extends JFrame {
     private static final int WIDTH_PROPORTION = 4;
     private static final int HEIGHT_PROPORTION = 3;
 
-    private Optional<String> userEmail = Optional.of("mario.rossi@email.com");
+    private Optional<String> userEmail = Optional.empty();
     private Optional<Integer> orderId = Optional.empty();
         private Optional<String> staffEmail = Optional.empty();
 
@@ -38,7 +38,7 @@ public class Window extends JFrame {
     }
 
     public void display() {
-        setContentPane(MainPanels.CLIENT_HOME.getPanel());
+        setContentPane(MainPanels.LOGIN.getPanel());
         setLocationByPlatform(true);
         setVisible(true);
         setResizable(false);

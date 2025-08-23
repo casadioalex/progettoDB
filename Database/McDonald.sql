@@ -136,57 +136,123 @@ alter table PRODUCT_INGREDIENTS add constraint FK_PRODUCT_INGREDIENTS_INGREDIENT
 INSERT INTO USERS (username, name, surname, email, password, registrationDate, role, blocked) VALUES
 ('mrossi', 'Mario', 'Rossi', 'mario.rossi@email.com', 'c4cb8b3fae0fa9eabf8a91e84b1c7cfcfa2c3e0b1b2c2a1a3e6a0a1a5e6a2e3e', '2024-01-10', 'CLIENT', false),
 ('lbianchi', 'Luca', 'Bianchi', 'luca.bianchi@email.com', '6cb75f652a9b52798eb6cf2201057c73e0679d741c7c252f7d7c1e03c6d5e7c6', '2024-02-15', 'STAFF', false),
-('admin', 'Admin', 'McDonald', 'admin@mcdonald.com', '713bfda78870bf9d1b261f565286f85e97ee614efe5f0faf7c34e7ca4f65baca', '2023-12-01', 'ADMIN', false);
+('admin', 'Admin', 'McDonald', 'admin@mcdonald.com', '713bfda78870bf9d1b261f565286f85e97ee614efe5f0faf7c34e7ca4f65baca', '2023-12-01', 'ADMIN', false),
+('gverdi', 'Giulia', 'Verdi', 'giulia.verdi@email.com', 'passwordhash1', '2024-03-20', 'CLIENT', false),
+('pneri', 'Paolo', 'Neri', 'paolo.neri@email.com', 'passwordhash2', '2024-05-11', 'CLIENT', true),
+('agialli', 'Anna', 'Gialli', 'anna.gialli@email.com', 'passwordhash3', '2024-06-01', 'STAFF', false);
 
 -- ADDRESSES table population
 INSERT INTO ADDRESSES (street, number, city, postalCode, province, user_email) VALUES
-('Via Roma', 10, 'Milano', 20100, 'MI', 'mario.rossi@email.com'),
-('Via Roma', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com'),
-('Corso Italia', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com');
+('Via Roma', '10', 'Milano', '20121', 'MI', 'mario.rossi@email.com'),
+('Corso Vittorio Emanuele', '22', 'Milano', '20122', 'MI', 'mario.rossi@email.com'),
+('Via del Corso', '101', 'Roma', '00186', 'RM', 'luca.bianchi@email.com'),
+('Piazza di Spagna', '5', 'Roma', '00187', 'RM', 'luca.bianchi@email.com'),
+('Via Toledo', '256', 'Napoli', '80132', 'NA', 'giulia.verdi@email.com'),
+('Via Indipendenza', '8', 'Bologna', '40121', 'BO', 'paolo.neri@email.com');
 
 -- PRODUCTS table population
 INSERT INTO PRODUCTS (name, price) VALUES
 ('Big Mac', 5.50),
 ('McChicken', 4.80),
-('Patatine', 2.50);
+('Cheeseburger', 2.00),
+('Chicken McNuggets 6pz', 4.50),
+('Patatine Fritte Medie', 2.50),
+('Coca-Cola 0.5L', 2.80),
+('Acqua Naturale 0.5L', 1.50),
+('McFlurry Oreo', 3.20);
 
 -- INGREDIENTS table population
 INSERT INTO INGREDIENTS (name) VALUES
+('Pane al sesamo'),
+('Carne bovina'),
+('Insalata Iceberg'),
+('Formaggio Cheddar'),
+('Salsa Big Mac'),
+('Cetriolini'),
+('Cipolla'),
 ('Pane'),
-('Carne'),
-('Insalata'),
-('Formaggio'),
-('Patate');
+('Pollo'),
+('Maionese'),
+('Patate'),
+('Olio per frittura'),
+('Sale'),
+('Biscotti Oreo'),
+('Gelato Fiordilatte'),
+('Acqua'),
+('Zucchero'),
+('Anidride Carbonica');
 
 -- PRODUCT_INGREDIENTS table population
 INSERT INTO PRODUCT_INGREDIENTS (product_name, ingredient_name) VALUES
-('Big Mac', 'Pane'),
-('Big Mac', 'Carne'),
-('Big Mac', 'Insalata'),
-('Big Mac', 'Formaggio'),
-('McChicken', 'Pane'),
-('McChicken', 'Carne'),
-('McChicken', 'Insalata'),
-('Patatine', 'Patate');
+('Big Mac', 'Pane al sesamo'),
+('Big Mac', 'Carne bovina'),
+('Big Mac', 'Insalata Iceberg'),
+('Big Mac', 'Formaggio Cheddar'),
+('Big Mac', 'Salsa Big Mac'),
+('Big Mac', 'Cetriolini'),
+('Big Mac', 'Cipolla'),
+('McChicken', 'Pane al sesamo'),
+('McChicken', 'Pollo'),
+('McChicken', 'Insalata Iceberg'),
+('McChicken', 'Maionese'),
+('Cheeseburger', 'Pane'),
+('Cheeseburger', 'Carne bovina'),
+('Cheeseburger', 'Formaggio Cheddar'),
+('Cheeseburger', 'Cetriolini'),
+('Cheeseburger', 'Cipolla'),
+('Chicken McNuggets 6pz', 'Pollo'),
+('Patatine Fritte Medie', 'Patate'),
+('Patatine Fritte Medie', 'Olio per frittura'),
+('Patatine Fritte Medie', 'Sale'),
+('McFlurry Oreo', 'Gelato Fiordilatte'),
+('McFlurry Oreo', 'Biscotti Oreo'),
+('Coca-Cola 0.5L', 'Acqua'),
+('Coca-Cola 0.5L', 'Zucchero'),
+('Coca-Cola 0.5L', 'Anidride Carbonica'),
+('Acqua Naturale 0.5L', 'Acqua');
 
 -- NUTRITIONAL_INFOS table population
 INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, fats) VALUES
-('Big Mac', 500, 45, 25, 28),
-('McChicken', 400, 40, 20, 18),
-('Patatine', 300, 35, 4, 15);
+('Big Mac', 503, 42, 26, 25),
+('McChicken', 433, 41, 22, 20),
+('Cheeseburger', 301, 33, 15, 12),
+('Chicken McNuggets 6pz', 269, 16, 15, 16),
+('Patatine Fritte Medie', 330, 42, 4, 16),
+('Coca-Cola 0.5L', 210, 53, 0, 0),
+('Acqua Naturale 0.5L', 0, 0, 0, 0),
+('McFlurry Oreo', 341, 54, 6, 11);
 
 -- ORDERS table population
 INSERT INTO ORDERS (price, order_date, user_email, address_street, address_number, address_city, completed) VALUES
-(8.50, '2024-08-01', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', true),
-(6.00, '2024-08-02', 'luca.bianchi@email.com', 'Corso Italia', '5', 'Roma', false);
+(10.80, '2025-08-10', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', true),
+(12.30, '2025-08-11', 'luca.bianchi@email.com', 'Via del Corso', '101', 'Roma', true),
+(9.50, '2025-08-12', 'giulia.verdi@email.com', 'Via Toledo', '256', 'Napoli', false),
+(5.50, '2025-08-15', 'mario.rossi@email.com', 'Corso Vittorio Emanuele', '22', 'Milano', true),
+(15.00, '2025-08-20', 'luca.bianchi@email.com', 'Piazza di Spagna', '5', 'Roma', false);
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
-(1, 'Big Mac', 2),
-(1, 'Patatine', 1),
-(2, 'McChicken', 1);
+(1, 'McChicken', 1),
+(1, 'Patatine Fritte Medie', 1),
+(1, 'Coca-Cola 0.5L', 1),
+(2, 'Big Mac', 1),
+(2, 'Chicken McNuggets 6pz', 1),
+(2, 'Acqua Naturale 0.5L', 1),
+(3, 'Cheeseburger', 2),
+(3, 'Patatine Fritte Medie', 1),
+(3, 'McFlurry Oreo', 1),
+(4, 'Big Mac', 1),
+(5, 'Big Mac', 1),
+(5, 'McChicken', 1),
+(5, 'Patatine Fritte Medie', 2);
 
 -- REVIEWS table population
 INSERT INTO REVIEWS (comment, vote, review_date, user_email) VALUES
-('Ottimo servizio!', 5, '2024-08-03', 'mario.rossi@email.com'),
-('Panino buono ma attesa lunga.', 3, '2024-08-04', 'luca.bianchi@email.com');
+('Ottimo servizio! Panino arrivato caldo e in orario.', 5, '2025-08-11', 'mario.rossi@email.com'),
+('Panino buono ma attesa un po'' lunga.', 3, '2025-08-12', 'luca.bianchi@email.com'),
+('Il mio ordine non è ancora stato completato, ma il sito è facile da usare.', 4, '2025-08-13', 'giulia.verdi@email.com'),
+('Tutto perfetto come sempre, una garanzia!', 5, '2025-08-16', 'mario.rossi@email.com'),
+('Servizio veloce e cibo caldo.', 5, '2025-08-17', 'luca.bianchi@email.com'),
+('La qualità del cibo è sempre eccellente.', 5, '2025-08-18', 'giulia.verdi@email.com'),
+('Purtroppo, ho trovato un capello nel panino.', 1, '2025-08-19', 'paolo.neri@email.com'),
+('Il gelato era fuso e la coca-cola calda.', 2, '2025-08-20', 'anna.gialli@email.com');

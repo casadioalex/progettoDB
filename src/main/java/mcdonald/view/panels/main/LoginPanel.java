@@ -152,17 +152,17 @@ public class LoginPanel extends JPanel {
         Window window = (Window) SwingUtilities.getWindowAncestor(this);
         switch (userRole.toUpperCase()) {
             case "CLIENT" -> {
-                window.switchMainPanel(MainPanels.CLIENT_HOME);
                 window.setUserEmail(userEmail);
+                window.switchMainPanel(MainPanels.CLIENT_HOME);
             }
                 
             case "STAFF" -> {
-                window.switchMainPanel(MainPanels.STAFF_HOME);
                 window.setUserEmail(userEmail);
+                window.switchMainPanel(MainPanels.STAFF_HOME);
             }
             case "ADMIN" -> {
-                window.switchMainPanel(MainPanels.STAFF_HOME);
                 window.setUserEmail(userEmail);
+                window.switchMainPanel(MainPanels.STAFF_HOME);
             }
             default -> {
                 System.err.println("Unknown user role: " + userRole);
