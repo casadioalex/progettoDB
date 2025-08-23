@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -27,11 +26,9 @@ import mcdonald.view.main.Window;
 
 public class StaffHomePanel extends JPanel {
 
-    private static final String TITLE = "STAFF HOME";
+    private static final String TITLE = "ORDERS";
     private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
-
-    private static final double WIDTH_INSET_PROPORTION = 0.05;
-    private static final double HEIGHT_INSET_PROPORTION = 0.1;
+    private static final String REFRESH_BUTTON_TEXT = "REFRESH";
 
     private static final String TITLE_FONT_NAME = "Arial";
     private static final int TITLE_FONT_SIZE = 24;
@@ -42,31 +39,35 @@ public class StaffHomePanel extends JPanel {
     private final JButton logoutButton;
     private final JPanel ordersPanel;
     private final List<Integer> ordersIds = new ArrayList<>();
+    private final JButton viewStaffButton;
+    private final JButton blockUserButton;
 
     public StaffHomePanel() {
         setLayout(new GridBagLayout());
+
+        // Imposta i margini qui
+        final Insets insets = new Insets(20, 20, 20, 20); // Valore fisso per i margini
+        gbc = new GridBagConstraints();
+        gbc.insets = insets;
 
         gbc.fill = GridBagConstraints.BOTH;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1; // Modificato per fare spazio al pulsante
+        gbc.weightx = 1.0; // Permette al titolo di usare lo spazio extra
         JLabel titleLabel = new JLabel(TITLE);
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
 
+        gbc.gridx = 0; // Reimposta gridx per la riga successiva
+        gbc.gridwidth = 3; // Occupa di nuovo tutta la larghezza
         gbc.gridy++;
         ordersPanel = new JPanel();
         ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
-        getUncompletedOrdersIds();
-        for (int orderid : ordersIds) {
-            JButton orderButton = new JButton(String.format("ORDER: #%04d", orderid));
-            orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
-            orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
-            orderButton.addActionListener(e -> apriOrdine(orderid));
-            ordersPanel.add(orderButton);
-        }
+        
+        refreshOrdersList(); // Carica e popola la lista all'avvio
 
         JScrollPane scrollPane = new JScrollPane(ordersPanel);
         scrollPane.setPreferredSize(new Dimension(500, 300));
@@ -74,35 +75,49 @@ public class StaffHomePanel extends JPanel {
         add(scrollPane, gbc);
 
         gbc.gridy++;
+        gbc.gridwidth = 3;
+        JButton refreshButton = new JButton(REFRESH_BUTTON_TEXT);
+        add(refreshButton, gbc);
+        refreshButton.addActionListener(e -> refreshOrdersList());
+
+        gbc.gridy++;
+        gbc.gridx = 0;
         gbc.gridwidth = 1;
         gbc.weightx = 0.3;
         logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
         add(logoutButton, gbc);
         logoutButton.addActionListener(e -> {
             Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            Window.setUserEmail(null);
             window.switchMainPanel(MainPanels.LOGIN);
-            window.setUserEmail(null);
         });
 
+        // Crea i pulsanti admin e aggiungili al pannello, ma nascondili
+        gbc.gridx++;
+        viewStaffButton = new JButton("VIEW STAFF");
+        add(viewStaffButton, gbc);
+        viewStaffButton.addActionListener(e -> apriStaffMenu());
+
+        gbc.gridx++;
+        blockUserButton = new JButton("VIEW USERS");
+        add(blockUserButton, gbc);
+        blockUserButton.addActionListener(e -> apriBlockUsers());
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
         String role = getUserRole();
-        if ("ADMIN".equalsIgnoreCase(role)) {
-            gbc.gridx++;
-            JButton viewStaffButton = new JButton("VIEW STAFF");
-            add(viewStaffButton, gbc);
-            viewStaffButton.addActionListener(e -> apriStaffMenu());
-
-            gbc.gridx++;
-            JButton blockUserButton = new JButton("VIEW USERS");
-            add(blockUserButton, gbc);
-            blockUserButton.addActionListener(e -> apriBlockUsers());
-
-        }
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(role);
+        viewStaffButton.setVisible(isAdmin);
+        blockUserButton.setVisible(isAdmin);
+        refreshOrdersList();
     }
 
     private void apriOrdine(int orderid) {
         Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        Window.setOrderId(orderid);
         window.switchMainPanel(MainPanels.ORDER_DETAILS);
-        window.setOrderId(orderid);
     }
 
     private void apriStaffMenu() {
@@ -113,6 +128,25 @@ public class StaffHomePanel extends JPanel {
     private void apriBlockUsers() {
         Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
         window.switchMainPanel(MainPanels.BLOCK_USERS);
+    }
+
+    private void populateOrdersPanel() {
+        ordersPanel.removeAll();
+        for (int orderid : ordersIds) {
+            JButton orderButton = new JButton(String.format("ORDER: #%04d", orderid));
+            orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+            orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
+            orderButton.addActionListener(e -> apriOrdine(orderid));
+            ordersPanel.add(orderButton);
+        }
+        ordersPanel.revalidate();
+        ordersPanel.repaint();
+    }
+
+    private void refreshOrdersList() {
+        ordersIds.clear();
+        getUncompletedOrdersIds();
+        populateOrdersPanel();
     }
 
     private void getUncompletedOrdersIds() {
@@ -143,13 +177,11 @@ public class StaffHomePanel extends JPanel {
         String db_email = "root";
         String db_password = "";
         String role = "";
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        String userEmail = window.getUserEmail().orElse("");
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_USER_ROLE");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, userEmail);
+                stmt.setString(1, Window.getUserEmail().orElse(""));
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     role = rs.getString("role");
@@ -161,26 +193,5 @@ public class StaffHomePanel extends JPanel {
             System.err.println("Error: " + e.getMessage());
         }
         return role;
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        final Dimension size = getPreferredSize();
-        final var width = size.getWidth();
-        final var height = size.getHeight();
-
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION),
-                (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
-
-        GridBagLayout layout = (GridBagLayout) getLayout();
-        Arrays.stream(getComponents()).forEach(component -> {
-            gbc = layout.getConstraints(component);
-            gbc.insets = insets;
-            layout.setConstraints(component, gbc);
-        });
-
-        revalidate();
-        repaint();
     }
 }

@@ -26,6 +26,7 @@ import mcdonald.view.main.Window;
 public class BlockUserPanel extends JPanel {
     private static final String TITLE = "USERS LIST";
     private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
+    private static final String REFRESH_BUTTON_TEXT = "REFRESH LIST";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -37,6 +38,7 @@ public class BlockUserPanel extends JPanel {
     private GridBagConstraints gbc = new GridBagConstraints();
 
     private final JButton backButton;
+    private final JButton refreshButton;
     private final JPanel clientPanel;
 
     public BlockUserPanel() {
@@ -89,13 +91,19 @@ public class BlockUserPanel extends JPanel {
 
         gbc.gridwidth = 1;
         gbc.gridy++;
+        gbc.weighty = 0;
         gbc.weightx = 0.5;
         backButton = new JButton(BACK_BUTTON_TEXT);
         add(backButton, gbc);
         backButton.addActionListener(e -> {
-            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
             window.switchMainPanel(MainPanels.STAFF_HOME);
         });
+
+        gbc.gridx++;
+        refreshButton = new JButton(REFRESH_BUTTON_TEXT);
+        add(refreshButton, gbc);
+        refreshButton.addActionListener(e -> refreshUserList());
     }
 
     private List<String> getAllUsers() {

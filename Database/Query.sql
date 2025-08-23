@@ -2,7 +2,7 @@
     Query to authenticate users during login
 */
 -- LOGIN
-SELECT password, role FROM USERS WHERE email = ?;
+SELECT password, role, blocked FROM USERS WHERE email = ?;
 
 
 /*
@@ -40,6 +40,14 @@ FROM ORDER_DETAILS
 WHERE order_id = ?;
 
 /*
+    Query to get the status of a specific order
+*/
+-- GET_ORDER_STATUS_BY_ID
+SELECT completed
+FROM ORDERS
+WHERE order_id = ?;
+
+/*
     Query to mark an order as completed
 */
 -- COMPLETE_ORDER
@@ -51,9 +59,7 @@ WHERE order_id = ?;
     Query to get user role by email
 */
 -- GET_USER_ROLE
-SELECT role 
-FROM USERS 
-WHERE email = ?;
+SELECT role FROM USERS WHERE email = ?;
 
 /*
     Query to get all staff members
@@ -114,6 +120,9 @@ SELECT street, number, city FROM ADDRESSES WHERE user_email = ?;
 -- CREATE_ORDER
 INSERT INTO ORDERS (user_email, address_street, address_number, address_city, price, order_date) VALUES (?, ?, ?, ?, ?, NOW());
 
+/*
+    Query to create order details for a specific order
+*/
 -- CREATE_ORDER_DETAILS
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES (?, ?, ?);
 
@@ -141,6 +150,9 @@ UPDATE USERS
 SET blocked = false 
 WHERE email = ?
 
-
+/*
+    Query to get all details of a specific order
+*/
 -- GET_ORDER_DETAILS
 SELECT * FROM ORDER_DETAILS WHERE order_id = ?;
+

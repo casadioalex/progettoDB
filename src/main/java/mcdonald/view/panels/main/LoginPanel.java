@@ -127,10 +127,16 @@ public class LoginPanel extends JPanel {
                 if (rs.next()) {
                     String storedHash = rs.getString("password");
                     String userRole = rs.getString("role");
+                    boolean isBlocked = rs.getBoolean("blocked");
                     if (HashingUtil.checkPassword(user_password, storedHash)) {
-                        System.out.println("Login successful");
-                        errorMessage.setVisible(false);
-                        handleLoginSuccess(user_email, userRole);
+                        if (isBlocked) {
+                            errorMessage.setText("Your account is blocked.");
+                            errorMessage.setVisible(true);
+                        } else {
+                            System.out.println("Login successful");
+                            errorMessage.setVisible(false);
+                            handleLoginSuccess(user_email, userRole);
+                        }
                     } else {
                         errorMessage.setText("Email or password is incorrect");
                         errorMessage.setVisible(true);
@@ -152,16 +158,16 @@ public class LoginPanel extends JPanel {
         Window window = (Window) SwingUtilities.getWindowAncestor(this);
         switch (userRole.toUpperCase()) {
             case "CLIENT" -> {
-                window.setUserEmail(userEmail);
+                Window.setUserEmail(userEmail);
                 window.switchMainPanel(MainPanels.CLIENT_HOME);
             }
                 
             case "STAFF" -> {
-                window.setUserEmail(userEmail);
+                Window.setUserEmail(userEmail);
                 window.switchMainPanel(MainPanels.STAFF_HOME);
             }
             case "ADMIN" -> {
-                window.setUserEmail(userEmail);
+                Window.setUserEmail(userEmail);
                 window.switchMainPanel(MainPanels.STAFF_HOME);
             }
             default -> {

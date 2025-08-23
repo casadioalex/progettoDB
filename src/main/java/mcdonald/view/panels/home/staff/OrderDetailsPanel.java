@@ -69,8 +69,6 @@ public class OrderDetailsPanel extends JPanel {
         scrollPane.setPreferredSize(new Dimension(400, 200));
         add(scrollPane, gbc);
 
-        getOrderDetailsById();
-
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.weightx = 0.5;
@@ -95,26 +93,26 @@ public class OrderDetailsPanel extends JPanel {
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        int orderId = window.getOrderId().orElse(0);
-
-        try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
-            String query = QueryLoader.loadQuery("GET_ORDER_DETAILS_BY_ORDER_ID");
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setInt(1, orderId);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        String productName = rs.getString("product_name");
-                        int quantity = rs.getInt("quantity");
-                        tableModel.addRow(new Object[] { productName, quantity });
+        // Controlla se l'ID ordine è presente prima di procedere
+        Window.getOrderId().ifPresent(orderId -> {
+            try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
+                String query = QueryLoader.loadQuery("GET_ORDER_DETAILS_BY_ORDER_ID");
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setInt(1, orderId);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        while (rs.next()) {
+                            String productName = rs.getString("product_name");
+                            int quantity = rs.getInt("quantity");
+                            tableModel.addRow(new Object[] { productName, quantity });
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                System.err.println("SQL error: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Error: " + e.getMessage());
             }
-        } catch (SQLException e) {
-            System.err.println("SQL error: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+        });
     }
 
     private void completeOrder() {
@@ -123,7 +121,7 @@ public class OrderDetailsPanel extends JPanel {
         String db_email = "root";
         String db_password = "";
         Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        int orderId = window.getOrderId().orElse(0);
+        int orderId = Window.getOrderId().orElse(0);
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("COMPLETE_ORDER");
@@ -132,9 +130,8 @@ public class OrderDetailsPanel extends JPanel {
                 int updated = stmt.executeUpdate();
                 if (updated > 0) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Ordine completato!");
-                    completeOrderButton.setEnabled(false);
+                    Window.setOrderId(null);
                     window.switchMainPanel(MainPanels.STAFF_HOME);
-                    window.setOrderId(null);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(this, "Errore: ordine non trovato.");
                 }
@@ -149,6 +146,11 @@ public class OrderDetailsPanel extends JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
+
+        // Svuota la tabella e carica i nuovi dati
+        tableModel.setRowCount(0);
+        getOrderDetailsById();
+
         final Dimension size = getPreferredSize();
         final var width = size.getWidth();
         final var height = size.getHeight();

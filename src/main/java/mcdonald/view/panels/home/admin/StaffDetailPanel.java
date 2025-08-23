@@ -36,6 +36,11 @@ public class StaffDetailPanel extends JPanel {
 
     private final JButton backButton;
     private final JButton removeStaffButton;
+    private final JLabel usernameValueLabel;
+    private final JLabel nameValueLabel;
+    private final JLabel surnameValueLabel;
+    private final JLabel emailValueLabel;
+    private final JLabel registrationDateValueLabel;
 
     public StaffDetailPanel() {
         setLayout(new GridBagLayout());
@@ -50,7 +55,12 @@ public class StaffDetailPanel extends JPanel {
         add(titleLabel, gbc);
 
         String[] labels = { "Username:", "Name:", "Surname:", "Email:", "Registration Date:" };
-        String[] values = getStaffDetailsByEmail();
+        usernameValueLabel = new JLabel();
+        nameValueLabel = new JLabel();
+        surnameValueLabel = new JLabel();
+        emailValueLabel = new JLabel();
+        registrationDateValueLabel = new JLabel();
+        JLabel[] valueLabels = { usernameValueLabel, nameValueLabel, surnameValueLabel, emailValueLabel, registrationDateValueLabel };
 
         gbc.gridwidth = 1;
         for (int i = 0; i < labels.length; i++) {
@@ -58,7 +68,7 @@ public class StaffDetailPanel extends JPanel {
             gbc.gridy++;
             add(new JLabel(labels[i]), gbc);
             gbc.gridx = 1;
-            add(new JLabel(values[i]), gbc);
+            add(valueLabels[i], gbc);
         }
 
         gbc.gridwidth = 1;
@@ -80,14 +90,22 @@ public class StaffDetailPanel extends JPanel {
         removeStaffButton.addActionListener(e -> removeStaffByEmail());
     }
 
+    private void loadStaffDetails() {
+        String[] details = getStaffDetailsByEmail();
+        usernameValueLabel.setText(details[0]);
+        nameValueLabel.setText(details[1]);
+        surnameValueLabel.setText(details[2]);
+        emailValueLabel.setText(details[3]);
+        registrationDateValueLabel.setText(details[4]);
+    }
+
     private String[] getStaffDetailsByEmail() {
         String[] details = new String[5];
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        String email = window.getStaffEmail().orElse("");
+        String email = Window.getStaffEmail().orElseThrow(() -> new IllegalArgumentException("Staff email not found"));
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_STAFF_DETAIL_BY_EMAIL");
@@ -103,6 +121,7 @@ public class StaffDetailPanel extends JPanel {
                 }
             }
         } catch (Exception e) {
+            Arrays.fill(details, ""); // Pulisce i campi in caso di errore
             details[0] = "Errore caricamento dati: " + e.getMessage();
         }
         return details;
@@ -121,8 +140,7 @@ public class StaffDetailPanel extends JPanel {
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        String email = window.getStaffEmail().orElse("");
+        String email = Window.getStaffEmail().orElseThrow(() -> new IllegalArgumentException("Staff email not found"));
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("REMOVE_STAFF_BY_EMAIL");
@@ -131,7 +149,8 @@ public class StaffDetailPanel extends JPanel {
                 int deleted = stmt.executeUpdate();
                 if (deleted > 0) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Staff rimosso con successo.");
-                    // TODO: Torna al menu staff o aggiorna la vista
+                    Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+                    window.switchMainPanel(MainPanels.STAFF_MENU);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(this, "Nessun membro staff trovato con questa email.");
                 }
@@ -144,6 +163,8 @@ public class StaffDetailPanel extends JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
+        loadStaffDetails(); // Carica i dati quando il pannello sta per essere mostrato
+
         final Dimension size = getPreferredSize();
         final var width = size.getWidth();
         final var height = size.getHeight();

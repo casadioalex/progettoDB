@@ -184,6 +184,19 @@ public class RegisterPanel extends JPanel {
         registerButton.addActionListener(e -> tryToRegister());
     }
 
+    private void clearAllComponents() {
+        Arrays.stream(getComponents()).forEach(comp -> {
+            if (comp instanceof JTextField jTextField) {
+                jTextField.setText("");
+            } else if (comp instanceof JPasswordField jPasswordField) {
+                jPasswordField.setText("");
+            } else if (comp instanceof JLabel jLabel && jLabel == errorMessage) {
+                jLabel.setText("");
+                jLabel.setVisible(false);
+            }
+        });
+    }
+
     private boolean checkIfOneIsEmpty() {
         return Arrays.stream(getComponents()).anyMatch(comp -> {
             if (comp instanceof JTextField jTextField) {
@@ -255,6 +268,7 @@ public class RegisterPanel extends JPanel {
 
             if (user_registered && user_address_registered) {
                 Window window = (Window) SwingUtilities.getWindowAncestor(this);
+                clearAllComponents();
                 window.switchMainPanel(MainPanels.LOGIN);
             }
 

@@ -69,6 +69,9 @@ public class RegisterStaffPanel extends JPanel {
     private final JButton backButton;
     private final JLabel errorMessage;
 
+    private boolean staff_registered = false;
+    private boolean staff_address_registered = false;
+
     public RegisterStaffPanel() {
         setLayout(new GridBagLayout());
 
@@ -238,8 +241,10 @@ public class RegisterStaffPanel extends JPanel {
                 stmt.setString(5, user_hashpassword);
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
+                    staff_registered = true;
                     System.out.println("User registered successfully!");
                 } else {
+                    staff_registered = false;
                     System.out.println("Failed to register user.");
                     return;
                 }
@@ -255,11 +260,18 @@ public class RegisterStaffPanel extends JPanel {
                 stmt.setString(6, user_email);
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
+                    staff_address_registered = true;
                     System.out.println("Address registered successfully!");
                 } else {
+                    staff_address_registered = false;
                     System.out.println("Failed to register address.");
                     return;
                 }
+            }
+
+            if (staff_registered && staff_address_registered) {
+                Window window = (Window) SwingUtilities.getWindowAncestor(this);
+                window.switchMainPanel(MainPanels.STAFF_MENU);
             }
 
         } catch (SQLException e) {
@@ -268,6 +280,8 @@ public class RegisterStaffPanel extends JPanel {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
+
+
     }
 
     private void applyProportionalInsets() {

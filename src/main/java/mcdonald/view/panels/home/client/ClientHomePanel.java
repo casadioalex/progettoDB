@@ -27,7 +27,7 @@ import mcdonald.view.main.Window;
 
 public class ClientHomePanel extends JPanel {
 
-    private static final String TITLE = "CLIENT HOME";
+    private static final String TITLE = "ORDERS";
     private static final String REFRESH_BUTTON_TEXT = "REFRESH ORDERS";
     private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
     private static final String NEW_ORDER_BUTTON_TEXT = "NEW ORDER";
@@ -124,12 +124,11 @@ public class ClientHomePanel extends JPanel {
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_ALL_ORDERS");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, window.getUserEmail().orElseThrow(() -> new IllegalArgumentException("User email not found")));
+                stmt.setString(1, Window.getUserEmail().orElseThrow(() -> new IllegalArgumentException("User email not found")));
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int order_id = rs.getInt("order_id");

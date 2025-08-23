@@ -117,8 +117,7 @@ public class CreateOrderPanel extends JPanel {
             return;
         }
 
-        Window window = (Window) SwingUtilities.getWindowAncestor(this);
-        String userEmail = window.getUserEmail().orElseThrow(() -> new IllegalStateException("User email not set"));
+        String userEmail = Window.getUserEmail().orElseThrow(() -> new IllegalStateException("User email not set"));
 
         String url = "jdbc:mysql://localhost:3306/mcdonald";
         String db_user = "root";
