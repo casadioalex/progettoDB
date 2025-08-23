@@ -17,13 +17,15 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
-public class StaffHome extends JPanel {
+public class StaffHomePanel extends JPanel {
 
     private static final String TITLE = "STAFF HOME";
     private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
@@ -41,9 +43,7 @@ public class StaffHome extends JPanel {
     private final JPanel ordersPanel;
     private final List<Integer> ordersIds = new ArrayList<>();
 
-
-    
-    public StaffHome() {
+    public StaffHomePanel() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -55,17 +55,13 @@ public class StaffHome extends JPanel {
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
-     
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
 
+        gbc.gridy++;
         ordersPanel = new JPanel();
         ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
         getUncompletedOrdersIds();
         for (int orderid : ordersIds) {
-            String order = String.valueOf(orderid);
-            JButton orderButton = new JButton(order);
+            JButton orderButton = new JButton(String.format("ORDER: #%04d", orderid));
             orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
             orderButton.addActionListener(e -> apriOrdine(orderid));
@@ -77,17 +73,46 @@ public class StaffHome extends JPanel {
 
         add(scrollPane, gbc);
 
-
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
         gbc.gridy++;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.3;
         logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
         add(logoutButton, gbc);
+        logoutButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.LOGIN);
+            window.setUserEmail(null);
+        });
+
+        String role = getUserRole();
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            gbc.gridx++;
+            JButton viewStaffButton = new JButton("VIEW STAFF");
+            add(viewStaffButton, gbc);
+            viewStaffButton.addActionListener(e -> apriStaffMenu());
+
+            gbc.gridx++;
+            JButton blockUserButton = new JButton("VIEW USERS");
+            add(blockUserButton, gbc);
+            blockUserButton.addActionListener(e -> apriBlockUsers());
+
+        }
     }
 
     private void apriOrdine(int orderid) {
-        // Qui puoi aprire un nuovo JFrame o JPanel con i dettagli dell’ordine
-        JOptionPane.showMessageDialog(this, "Hai aperto: " + orderid);
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.ORDER_DETAILS);
+        window.setOrderId(orderid);
+    }
+
+    private void apriStaffMenu() {
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.STAFF_MENU);
+    }
+
+    private void apriBlockUsers() {
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.BLOCK_USERS);
     }
 
     private void getUncompletedOrdersIds() {
@@ -101,7 +126,7 @@ public class StaffHome extends JPanel {
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
-                    int order_id = rs.getInt("order_id"); 
+                    int order_id = rs.getInt("order_id");
                     ordersIds.add(order_id);
                 }
             }
@@ -112,6 +137,32 @@ public class StaffHome extends JPanel {
         }
     }
 
+    private String getUserRole() {
+        String database = "mcdonald";
+        String url = "jdbc:mysql://localhost:3306/" + database;
+        String db_email = "root";
+        String db_password = "";
+        String role = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        String userEmail = window.getUserEmail().orElse("");
+
+        try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
+            String query = QueryLoader.loadQuery("GET_USER_ROLE");
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, userEmail);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    role = rs.getString("role");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return role;
+    }
+
     @Override
     public void addNotify() {
         super.addNotify();
@@ -119,7 +170,8 @@ public class StaffHome extends JPanel {
         final var width = size.getWidth();
         final var height = size.getHeight();
 
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
+        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION),
+                (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
 
         GridBagLayout layout = (GridBagLayout) getLayout();
         Arrays.stream(getComponents()).forEach(component -> {

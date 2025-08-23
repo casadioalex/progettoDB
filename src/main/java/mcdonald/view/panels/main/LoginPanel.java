@@ -157,11 +157,11 @@ public class LoginPanel extends JPanel {
             }
                 
             case "STAFF" -> {
-                // TODO: window.switchMainPanel(MainPanels.STAFF_HOME);
+                window.switchMainPanel(MainPanels.STAFF_HOME);
                 window.setUserEmail(userEmail);
             }
             case "ADMIN" -> {
-                // TODO: window.switchMainPanel(MainPanels.ADMIN_HOME);
+                window.switchMainPanel(MainPanels.STAFF_HOME);
                 window.setUserEmail(userEmail);
             }
             default -> {

@@ -19,6 +19,8 @@ public class Window extends JFrame {
     private static final int HEIGHT_PROPORTION = 3;
 
     private Optional<String> userEmail = Optional.of("mario.rossi@email.com");
+    private Optional<Integer> orderId = Optional.empty();
+        private Optional<String> staffEmail = Optional.empty();
 
     public Window() {
         setTitle(TITLE);
@@ -57,6 +59,30 @@ public class Window extends JFrame {
             this.userEmail = Optional.empty();
         } else {
             this.userEmail = Optional.of(userEmail);
+        }
+    }
+
+    public void setOrderId(Integer orderId) {
+        if (orderId == null) {
+            this.orderId = Optional.empty();
+        } else {
+            this.orderId = Optional.of(orderId);
+        }
+    }
+
+    public Optional<Integer> getOrderId() {
+        return orderId;
+    }
+
+    public Optional<String> getStaffEmail() {
+        return staffEmail;
+    }
+
+    public void setStaffEmail(String staffEmail) {
+        if (Optional.ofNullable(staffEmail).isEmpty() || staffEmail.isEmpty()) {
+            this.staffEmail = Optional.empty();
+        } else {
+            this.staffEmail = Optional.of(staffEmail);
         }
     }
 

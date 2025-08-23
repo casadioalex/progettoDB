@@ -32,6 +32,59 @@ FROM ORDERS
 WHERE completed = 0;
 
 /*
+    Query to get all details of a specific order
+*/
+-- GET_ORDER_DETAILS_BY_ORDER_ID
+SELECT product_name, quantity
+FROM ORDER_DETAILS
+WHERE order_id = ?;
+
+/*
+    Query to mark an order as completed
+*/
+-- COMPLETE_ORDER
+UPDATE ORDERS
+SET completed = true
+WHERE order_id = ?;
+
+/*
+    Query to get user role by email
+*/
+-- GET_USER_ROLE
+SELECT role 
+FROM USERS 
+WHERE email = ?;
+
+/*
+    Query to get all staff members
+*/
+-- GET_ALL_STAFF
+SELECT name, surname, email
+FROM USERS
+WHERE role = 'STAFF';
+
+/*
+    Query to register new staff members
+*/
+-- REGISTER_NEW_STAFF
+INSERT INTO USERS (username, name, surname, email, password, registrationDate, role) VALUES (?, ?, ?, ?, ?, NOW(), 'STAFF');
+
+/*
+    Query to get staff details by email
+*/
+-- GET_STAFF_DETAIL_BY_EMAIL
+SELECT username, name, surname, email, registrationDate
+FROM USERS
+WHERE email = ?;
+
+/*
+    Query to remove a staff member by email
+*/
+-- REMOVE_STAFF_BY_EMAIL
+DELETE FROM USERS 
+WHERE email = ?;
+
+/*
     Query to get all products
 */
 -- GET_ALL_PRODUCTS
@@ -63,6 +116,31 @@ INSERT INTO ORDERS (user_email, address_street, address_number, address_city, pr
 
 -- CREATE_ORDER_DETAILS
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES (?, ?, ?);
+
+/*
+    Query to get all users
+*/
+-- GET_ALL_USERS
+SELECT username, name, surname, email, registrationDate, role, blocked
+FROM USERS
+WHERE role <> 'ADMIN';
+
+/*
+    Query to block a user by email
+*/
+-- BLOCK_USER
+UPDATE USERS
+SET blocked = true
+WHERE email = ?;
+
+/*
+    Query to unblock a user by email
+*/
+-- UNBLOCK_USER
+UPDATE USERS 
+SET blocked = false 
+WHERE email = ?
+
 
 -- GET_ORDER_DETAILS
 SELECT * FROM ORDER_DETAILS WHERE order_id = ?;
