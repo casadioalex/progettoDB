@@ -41,8 +41,8 @@ tuttavia proponiamo alcuni utenti già registrati per testare l'applicazione in 
 
 #### Client
 
-| Email                 | Password |
-| --------------------- | -------- |
-| client@email.com      | client   |
-| paolo.neri@email.com  | pneri    | ## [utente bloccato]
-| mario.rossi@email.com | mrossi   |
+| Email                 | Password | Note              |
+| --------------------- | -------- | ----------------- |
+| client@email.com      | client   |                   |
+| paolo.neri@email.com  | pneri    | [utente bloccato] |
+| mario.rossi@email.com | mrossi   |                   |
