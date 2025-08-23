@@ -33,7 +33,7 @@ create table ADDRESSES (
 create table ORDER_DETAILS (
      order_id int not null,
      product_name varchar(24) not null,
-     quantity char(2) not null,
+     quantity int not null,
      constraint IDORDER_DETAILS primary key (order_id, product_name));
 
 create table INGREDIENTS (
@@ -61,6 +61,7 @@ create table ORDERS (
 
 create table PRODUCTS (
      name varchar(24) not null,
+     price numeric(5,2) not null,
      constraint IDPRODUCTS primary key (name));
 
 create table PRODUCT_INGREDIENTS (
@@ -93,7 +94,7 @@ create table USERS (
 
 alter table ADDRESSES add constraint IDADDRESSES_1_FK
      foreign key (user_email)
-     references USERS(email);
+     references USERS(email) on delete cascade;
 
 alter table ORDERS add constraint FK_ORDERS_ADDRESSES
      foreign key (address_street, address_number, address_city)
@@ -144,10 +145,10 @@ INSERT INTO ADDRESSES (street, number, city, postalCode, province, user_email) V
 ('Corso Italia', 5, 'Roma', 00100, 'RM', 'luca.bianchi@email.com');
 
 -- PRODUCTS table population
-INSERT INTO PRODUCTS (name) VALUES
-('Big Mac'),
-('McChicken'),
-('Patatine');
+INSERT INTO PRODUCTS (name, price) VALUES
+('Big Mac', 5.50),
+('McChicken', 4.80),
+('Patatine', 2.50);
 
 -- INGREDIENTS table population
 INSERT INTO INGREDIENTS (name) VALUES
@@ -182,9 +183,9 @@ INSERT INTO ORDERS (price, order_date, user_email, address_street, address_numbe
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
-(1, 'Big Mac', '2'),
-(1, 'Patatine', '1'),
-(2, 'McChicken', '1');
+(1, 'Big Mac', 2),
+(1, 'Patatine', 1),
+(2, 'McChicken', 1);
 
 -- REVIEWS table population
 INSERT INTO REVIEWS (comment, vote, review_date, user_email) VALUES

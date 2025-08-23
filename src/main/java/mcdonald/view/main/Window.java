@@ -2,23 +2,12 @@ package mcdonald.view.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import mcdonald.api.main.MainPanels;
-import mcdonald.view.panels.home.admin.RegisterStaffPanel;
-import mcdonald.view.panels.home.admin.StaffDetail;
-import mcdonald.view.panels.home.admin.StaffMenu;
-import mcdonald.view.panels.home.client.ClientHomePanel;
-import mcdonald.view.panels.home.staff.OrderDetails;
-import mcdonald.view.panels.home.staff.StaffHome;
-import mcdonald.view.panels.main.LoginPanel;
-import mcdonald.view.panels.main.RegisterPanel;
 
 public class Window extends JFrame {
 
@@ -29,23 +18,12 @@ public class Window extends JFrame {
     private static final int WIDTH_PROPORTION = 4;
     private static final int HEIGHT_PROPORTION = 3;
 
-    private final List<JPanel> panels = new LinkedList<>();
     private Optional<String> userEmail = Optional.of("mario.rossi@email.com");
 
     public Window() {
         setTitle(TITLE);
         setIconImage(new ImageIcon(getClass().getResource(ICON_PATH)).getImage());
         setSize(getCustomSize());
-
-        panels.add(new StaffDetail("casadioalex04@gmail.com"));
-        panels.add(new StaffMenu());
-        panels.add(new RegisterStaffPanel());
-        panels.add(new RegisterPanel());
-        panels.add(new OrderDetails(2)); //TODO: togliere parametro
-        panels.add(new StaffHome("admin@mcdonald.com")); //TODO: togliere parametro
-        panels.add(new ClientHomePanel());
-        panels.add(new LoginPanel());
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
@@ -58,14 +36,14 @@ public class Window extends JFrame {
     }
 
     public void display() {
-        setContentPane(panels.getFirst());
+        setContentPane(MainPanels.CLIENT_HOME.getPanel());
         setLocationByPlatform(true);
         setVisible(true);
         setResizable(false);
     }
 
     public void switchMainPanel(MainPanels targetPanel) {
-        setContentPane(panels.get(targetPanel.ordinal()));
+        setContentPane(targetPanel.getPanel());
         revalidate();
         repaint();
     }

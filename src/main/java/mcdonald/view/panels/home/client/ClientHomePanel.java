@@ -21,19 +21,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.QueryLoader;
 import mcdonald.view.main.Window;
 
 public class ClientHomePanel extends JPanel {
 
     private static final String TITLE = "CLIENT HOME";
+    private static final String REFRESH_BUTTON_TEXT = "REFRESH ORDERS";
     private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
     private static final String NEW_ORDER_BUTTON_TEXT = "NEW ORDER";
 
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 24);
-
-    private static final double WIDTH_INSET_PROPORTION = 0.05;
-    private static final double HEIGHT_INSET_PROPORTION = 0.1;
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
@@ -41,6 +40,7 @@ public class ClientHomePanel extends JPanel {
     private final JScrollPane ordersScrollPane;
     private final JButton logoutButton;
     private final JButton newOrderButton;
+    private final JButton refreshButton;
 
     private final Map<Integer, String> ordersIds = new LinkedHashMap<>();
     private boolean dataLoaded = false;
@@ -49,6 +49,7 @@ public class ClientHomePanel extends JPanel {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -65,6 +66,12 @@ public class ClientHomePanel extends JPanel {
         ordersScrollPane.setPreferredSize(new Dimension(500, 300));
         add(ordersScrollPane, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        refreshButton = new JButton(REFRESH_BUTTON_TEXT);
+        add(refreshButton, gbc);
+
         gbc.gridy++;
         gbc.gridwidth = 1;
         gbc.weightx = 0.5;
@@ -74,18 +81,36 @@ public class ClientHomePanel extends JPanel {
         newOrderButton = new JButton(NEW_ORDER_BUTTON_TEXT);
         add(newOrderButton, gbc);
 
+        connectButtonsAction();
+    }
+
+    private void connectButtonsAction() {
+        logoutButton.addActionListener(e -> {
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
+            window.setUserEmail(null);
+            window.switchMainPanel(MainPanels.LOGIN);
+        });
+
+        newOrderButton.addActionListener(e -> {
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.CREATE_ORDER);
+        });
+
+        refreshButton.addActionListener(e -> loadOrders());
     }
 
     private void populateOrdersPanel() {
         ordersPanel.removeAll();
         ordersIds.forEach((orderid, str) -> {
-            JButton orderButton = new JButton(String.format("ORDER: #%04d %s", orderid, str));
+            JButton orderButton = new JButton(String.format("ORDER: #%04d   |   %s", orderid, str));
             orderButton.setName(String.valueOf(orderid));
             orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
             //orderButton.addActionListener(e -> apriOrdine(orderid));
             ordersPanel.add(orderButton);
         });
+        ordersPanel.revalidate();
+        ordersPanel.repaint();
     }
 
     private void getOrdersIds() {
@@ -102,9 +127,11 @@ public class ClientHomePanel extends JPanel {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int order_id = rs.getInt("order_id");
+                    double price = rs.getDouble("price");
                     boolean completed = rs.getBoolean("completed");
                     String order_date = rs.getString("order_date");
-                    ordersIds.put(order_id, String.format("%s [Completed: %s]", order_date, completed));
+                    String status = completed ? "Completed" : "In progress";
+                    ordersIds.put(order_id, String.format("%.2f€   |   %s   |   %s", price, order_date, status));
                 }
             }
 
@@ -116,31 +143,23 @@ public class ClientHomePanel extends JPanel {
         }
     }
 
+    /**
+     * 3. Crea un metodo pubblico per caricare e aggiornare gli ordini.
+     */
+    public void loadOrders() {
+        ordersIds.clear();
+        getOrdersIds();
+        populateOrdersPanel();
+    }
+
     @Override
     public void addNotify() {
         super.addNotify();
 
         if (!dataLoaded) {
-            getOrdersIds();
-            populateOrdersPanel();
+            loadOrders();
             dataLoaded = true;
         }
-
-        final Dimension size = getPreferredSize();
-        final var width = size.getWidth();
-        final var height = size.getHeight();
-
-        Insets insets = new Insets((int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION), (int) (height * HEIGHT_INSET_PROPORTION), (int) (width * WIDTH_INSET_PROPORTION));
-
-        GridBagLayout layout = (GridBagLayout) getLayout();
-        Arrays.stream(getComponents()).forEach(component -> {
-            gbc = layout.getConstraints(component);
-            gbc.insets = insets;
-            layout.setConstraints(component, gbc);
-        });
-
-        revalidate();
-        repaint();
     }
 
 }
