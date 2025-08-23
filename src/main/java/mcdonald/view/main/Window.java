@@ -11,7 +11,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import mcdonald.api.main.MainPanels;
+import mcdonald.view.panels.home.admin.RegisterStaffPanel;
+import mcdonald.view.panels.home.admin.StaffDetail;
+import mcdonald.view.panels.home.admin.StaffMenu;
 import mcdonald.view.panels.home.client.ClientHomePanel;
+import mcdonald.view.panels.home.staff.OrderDetails;
+import mcdonald.view.panels.home.staff.StaffHome;
 import mcdonald.view.panels.main.LoginPanel;
 import mcdonald.view.panels.main.RegisterPanel;
 
@@ -32,9 +37,14 @@ public class Window extends JFrame {
         setIconImage(new ImageIcon(getClass().getResource(ICON_PATH)).getImage());
         setSize(getCustomSize());
 
+        panels.add(new StaffDetail("casadioalex04@gmail.com"));
+        panels.add(new StaffMenu());
+        panels.add(new RegisterStaffPanel());
+        panels.add(new RegisterPanel());
+        panels.add(new OrderDetails(2)); //TODO: togliere parametro
+        panels.add(new StaffHome("admin@mcdonald.com")); //TODO: togliere parametro
         panels.add(new ClientHomePanel());
         panels.add(new LoginPanel());
-        panels.add(new RegisterPanel());
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
