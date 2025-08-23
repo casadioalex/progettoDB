@@ -152,8 +152,8 @@ public class LoginPanel extends JPanel {
         Window window = (Window) SwingUtilities.getWindowAncestor(this);
         switch (userRole.toUpperCase()) {
             case "CLIENT" -> {
-                window.switchMainPanel(MainPanels.CLIENT_HOME);
                 window.setUserEmail(userEmail);
+                window.switchMainPanel(MainPanels.CLIENT_HOME);
             }
                 
             case "STAFF" -> {

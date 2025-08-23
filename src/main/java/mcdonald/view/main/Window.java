@@ -18,7 +18,7 @@ public class Window extends JFrame {
     private static final int WIDTH_PROPORTION = 4;
     private static final int HEIGHT_PROPORTION = 3;
 
-    private Optional<String> userEmail = Optional.of("mario.rossi@email.com");
+    private Optional<String> userEmail = Optional.empty();
 
     public Window() {
         setTitle(TITLE);
