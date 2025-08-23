@@ -117,3 +117,27 @@ INSERT INTO ORDERS (user_email, address_street, address_number, address_city, pr
 -- CREATE_ORDER_DETAILS
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES (?, ?, ?);
 
+/*
+    Query to get all users
+*/
+-- GET_ALL_USERS
+SELECT username, name, surname, email, registrationDate, role, blocked
+FROM USERS
+WHERE role <> 'ADMIN';
+
+/*
+    Query to block a user by email
+*/
+-- BLOCK_USER
+UPDATE USERS
+SET blocked = true
+WHERE email = ?;
+
+/*
+    Query to unblock a user by email
+*/
+-- UNBLOCK_USER
+UPDATE USERS 
+SET blocked = false 
+WHERE email = ?
+

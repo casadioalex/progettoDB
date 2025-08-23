@@ -14,8 +14,11 @@ import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
 public class StaffDetailPanel extends JPanel {
     private static final String TITLE = "STAFF DETAILS";
@@ -34,7 +37,7 @@ public class StaffDetailPanel extends JPanel {
     private final JButton backButton;
     private final JButton removeStaffButton;
 
-    public StaffDetailPanel(String staffEmail) {
+    public StaffDetailPanel() {
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
 
@@ -47,7 +50,7 @@ public class StaffDetailPanel extends JPanel {
         add(titleLabel, gbc);
 
         String[] labels = { "Username:", "Name:", "Surname:", "Email:", "Registration Date:" };
-        String[] values = getStaffDetailsByEmail(staffEmail);
+        String[] values = getStaffDetailsByEmail();
 
         gbc.gridwidth = 1;
         for (int i = 0; i < labels.length; i++) {
@@ -64,21 +67,27 @@ public class StaffDetailPanel extends JPanel {
         gbc.weightx = 0.5;
         backButton = new JButton(BACK_BUTTON_TEXT);
         add(backButton, gbc);
+        backButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.STAFF_MENU);
+        });
 
         gbc.gridwidth = 1;
         gbc.gridx++;
         gbc.weightx = 0.5;
         removeStaffButton = new JButton(REMOVE_STAFF_BUTTON_TEXT);
         add(removeStaffButton, gbc);
-        removeStaffButton.addActionListener(e -> removeStaffByEmail(staffEmail));
+        removeStaffButton.addActionListener(e -> removeStaffByEmail());
     }
 
-    private String[] getStaffDetailsByEmail(String email) {
+    private String[] getStaffDetailsByEmail() {
         String[] details = new String[5];
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        String email = window.getStaffEmail().orElse("");
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_STAFF_DETAIL_BY_EMAIL");
@@ -99,7 +108,7 @@ public class StaffDetailPanel extends JPanel {
         return details;
     }
 
-    private void removeStaffByEmail(String email) {
+    private void removeStaffByEmail() {
         int confirm = javax.swing.JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure you want to remove the staff member?",
@@ -112,6 +121,8 @@ public class StaffDetailPanel extends JPanel {
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        String email = window.getStaffEmail().orElse("");
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("REMOVE_STAFF_BY_EMAIL");

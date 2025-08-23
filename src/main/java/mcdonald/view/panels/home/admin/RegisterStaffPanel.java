@@ -17,13 +17,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.HashingUtil;
 import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
 public class RegisterStaffPanel extends JPanel {
 
     private static final String TITLE = "REGISTER ADDRESS";
+    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
     private static final String USERNAME_LABEL_TEXT = "Username:";
     private static final String NAME_LABEL_TEXT = "Name:";
     private static final String SURNAME_LABEL_TEXT = "Surname:";
@@ -62,6 +66,7 @@ public class RegisterStaffPanel extends JPanel {
     private final JTextField addressProvinceField;
 
     private final JButton confirmRegistrationButton;
+    private final JButton backButton;
     private final JLabel errorMessage;
 
     public RegisterStaffPanel() {
@@ -159,7 +164,14 @@ public class RegisterStaffPanel extends JPanel {
         // Buttons
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
+        backButton = new JButton(BACK_BUTTON_TEXT);
+        add(backButton, gbc);
+
+        gbc.gridx++;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
         confirmRegistrationButton = new JButton(CONFIRM_REGISTRATION_BUTTON_TEXT);
         add(confirmRegistrationButton, gbc);
 
@@ -177,9 +189,12 @@ public class RegisterStaffPanel extends JPanel {
     }
 
     private void connectButtonActions() {
-
         confirmRegistrationButton.addActionListener(e -> tryToRegister());
 
+        backButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.STAFF_HOME);
+        });
     }
 
     private boolean checkIfOneIsEmpty() {

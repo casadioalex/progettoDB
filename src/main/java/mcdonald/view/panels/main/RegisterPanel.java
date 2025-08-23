@@ -69,6 +69,9 @@ public class RegisterPanel extends JPanel {
     private final JButton loginButton;
     private final JLabel errorMessage;
 
+    private boolean user_registered = false;
+    private boolean user_address_registered = false;
+
     public RegisterPanel() {
         setLayout(new GridBagLayout());
 
@@ -222,8 +225,10 @@ public class RegisterPanel extends JPanel {
                 stmt.setString(5, user_hashpassword);
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
+                    user_registered = true;
                     System.out.println("User registered successfully!");
                 } else {
+                    user_registered = false;
                     System.out.println("Failed to register user.");
                     return;
                 }
@@ -239,11 +244,18 @@ public class RegisterPanel extends JPanel {
                 stmt.setString(6, user_email);
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
+                    user_address_registered = true;
                     System.out.println("Address registered successfully!");
                 } else {
+                    user_address_registered = false;
                     System.out.println("Failed to register address.");
                     return;
                 }
+            }
+
+            if (user_registered && user_address_registered) {
+                Window window = (Window) SwingUtilities.getWindowAncestor(this);
+                window.switchMainPanel(MainPanels.LOGIN);
             }
 
         } catch (SQLException e) {

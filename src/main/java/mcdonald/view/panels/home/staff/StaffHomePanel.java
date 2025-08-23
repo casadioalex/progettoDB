@@ -17,11 +17,13 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
 public class StaffHomePanel extends JPanel {
 
@@ -41,7 +43,7 @@ public class StaffHomePanel extends JPanel {
     private final JPanel ordersPanel;
     private final List<Integer> ordersIds = new ArrayList<>();
 
-    public StaffHomePanel(String userEmail) {
+    public StaffHomePanel() {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -73,28 +75,44 @@ public class StaffHomePanel extends JPanel {
 
         gbc.gridy++;
         gbc.gridwidth = 1;
-        gbc.weightx = 0.5;
+        gbc.weightx = 0.3;
         logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
         add(logoutButton, gbc);
+        logoutButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.LOGIN);
+            window.setUserEmail(null);
+        });
 
-        String role = getUserRole(userEmail);
+        String role = getUserRole();
         if ("ADMIN".equalsIgnoreCase(role)) {
             gbc.gridx++;
             JButton viewStaffButton = new JButton("VIEW STAFF");
             add(viewStaffButton, gbc);
             viewStaffButton.addActionListener(e -> apriStaffMenu());
-            
+
+            gbc.gridx++;
+            JButton blockUserButton = new JButton("VIEW USERS");
+            add(blockUserButton, gbc);
+            blockUserButton.addActionListener(e -> apriBlockUsers());
+
         }
     }
 
     private void apriOrdine(int orderid) {
-        //TODO: spostarsi a order details dando come parametro order per la query
-        JOptionPane.showMessageDialog(this, "Hai aperto: " + orderid);
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.ORDER_DETAILS);
+        window.setOrderId(orderid);
     }
 
     private void apriStaffMenu() {
-        //TODO: spostarsi staff menu
-        JOptionPane.showMessageDialog(this, "Hai aperto: Staff Menu" );
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.STAFF_MENU);
+    }
+
+    private void apriBlockUsers() {
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.BLOCK_USERS);
     }
 
     private void getUncompletedOrdersIds() {
@@ -119,17 +137,19 @@ public class StaffHomePanel extends JPanel {
         }
     }
 
-    private String getUserRole(String email) {
+    private String getUserRole() {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
         String role = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        String userEmail = window.getUserEmail().orElse("");
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_USER_ROLE");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, email);
+                stmt.setString(1, userEmail);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     role = rs.getString("role");

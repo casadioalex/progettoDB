@@ -2,6 +2,7 @@ package mcdonald.api.main;
 
 import javax.swing.JPanel;
 
+import mcdonald.view.panels.home.admin.BlockUserPanel;
 import mcdonald.view.panels.home.admin.RegisterStaffPanel;
 import mcdonald.view.panels.home.admin.StaffDetailPanel;
 import mcdonald.view.panels.home.admin.StaffMenuPanel;
@@ -23,6 +24,7 @@ public enum MainPanels {
     STAFF_DETAILS(new StaffDetailPanel()),
     CREATE_ORDER(new CreateOrderPanel()),
     ORDER_DETAILS(new OrderDetailsPanel()),
+    BLOCK_USERS(new BlockUserPanel()),
     VIEW_PRODUCT_INFO(new ViewProductInfo());
 
     private final JPanel panel;

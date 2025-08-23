@@ -17,9 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import mcdonald.api.main.MainPanels;
 import mcdonald.model.common.QueryLoader;
+import mcdonald.view.main.Window;
 
 public class OrderDetailsPanel extends JPanel {
     private static final String TITLE = "ORDER DETAILS";
@@ -40,7 +43,7 @@ public class OrderDetailsPanel extends JPanel {
     private final JTable orderTable;
     private final DefaultTableModel tableModel;
 
-    public OrderDetailsPanel(int orderId) {
+    public OrderDetailsPanel() {
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
 
@@ -66,7 +69,7 @@ public class OrderDetailsPanel extends JPanel {
         scrollPane.setPreferredSize(new Dimension(400, 200));
         add(scrollPane, gbc);
 
-        getOrderDetailsById(orderId);
+        getOrderDetailsById();
 
         gbc.gridwidth = 1;
         gbc.gridy++;
@@ -74,19 +77,26 @@ public class OrderDetailsPanel extends JPanel {
         gbc.weighty = 0;
         backButton = new JButton(BACK_BUTTON_TEXT);
         add(backButton, gbc);
+        backButton.addActionListener(e -> {
+            Window window = (Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.STAFF_HOME);
+            window.setOrderId(null);
+        });
 
         gbc.gridwidth = 1;
         gbc.gridx++;
         completeOrderButton = new JButton(COMPLETE_ORDER_BUTTON_TEXT);
         add(completeOrderButton, gbc);
-        completeOrderButton.addActionListener(e -> completeOrder(orderId));
+        completeOrderButton.addActionListener(e -> completeOrder());
     }
 
-    private void getOrderDetailsById(int orderId) {
+    private void getOrderDetailsById() {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        int orderId = window.getOrderId().orElse(0);
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_ORDER_DETAILS_BY_ORDER_ID");
@@ -107,11 +117,13 @@ public class OrderDetailsPanel extends JPanel {
         }
     }
 
-    private void completeOrder(int orderId) {
+    private void completeOrder() {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        int orderId = window.getOrderId().orElse(0);
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("COMPLETE_ORDER");
@@ -121,6 +133,8 @@ public class OrderDetailsPanel extends JPanel {
                 if (updated > 0) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Ordine completato!");
                     completeOrderButton.setEnabled(false);
+                    window.switchMainPanel(MainPanels.STAFF_HOME);
+                    window.setOrderId(null);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(this, "Errore: ordine non trovato.");
                 }

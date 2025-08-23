@@ -16,9 +16,12 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import mcdonald.api.main.MainPanels;
+import mcdonald.view.main.Window;
 
 public class StaffMenuPanel extends JPanel {
     private static final String TITLE = "STAFF MENU";
@@ -57,7 +60,6 @@ public class StaffMenuPanel extends JPanel {
         gbc.weighty = 1;
         staffPanel = new JPanel();
         staffPanel.setLayout(new BoxLayout(staffPanel, BoxLayout.Y_AXIS));
-
         List<String> staff = getAllStaffMembers();
         for (String member : staff) {
             JButton staffButton = new JButton(member);
@@ -66,7 +68,6 @@ public class StaffMenuPanel extends JPanel {
             staffButton.addActionListener(e -> openStaffDetails(member));
             staffPanel.add(staffButton);
         }
-
         JScrollPane scrollPane = new JScrollPane(staffPanel);
         scrollPane.setPreferredSize(new Dimension(400, 300));
         add(scrollPane, gbc);
@@ -76,26 +77,25 @@ public class StaffMenuPanel extends JPanel {
         gbc.weightx = 0.5;
         backButton = new JButton(BACK_BUTTON_TEXT);
         add(backButton, gbc);
+        backButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.STAFF_HOME);
+        });
 
         gbc.gridx++;
         newStaffButton = new JButton(NEW_STAFF_BUTTON_TEXT);
         add(newStaffButton, gbc);
-
         newStaffButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Apertura RegisterStaffPanel...");
-           // TODO: Apri RegisterStaffPanel qui
-            // TODO: Sostituisci con la logica per mostrare il pannello di registrazione
-            // staff
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            window.switchMainPanel(MainPanels.REGISTER_STAFF);
         });
     }
 
     private void openStaffDetails(String member) {
-        // Qui puoi estrarre l'email dal testo del bottone se necessario TODO
-        // Esempio: "Mario Rossi (mario@email.com)"
         String email = member.substring(member.indexOf('(') + 1, member.indexOf(')'));
-        // Sostituisci questa JOptionPane con la logica per aprire il vero pannello dei
-        // dettagli
-        JOptionPane.showMessageDialog(this, "Staff details per: " + email);
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.STAFF_DETAILS);
+        window.setStaffEmail(email);
     }
 
     private List<String> getAllStaffMembers() {
