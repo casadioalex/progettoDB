@@ -36,7 +36,7 @@ public class Window extends JFrame {
     }
 
     public void display() {
-        setContentPane(MainPanels.CLIENT_HOME.getPanel());
+        setContentPane(MainPanels.LOGIN.getPanel());
         setLocationByPlatform(true);
         setVisible(true);
         setResizable(false);
