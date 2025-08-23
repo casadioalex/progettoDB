@@ -111,7 +111,7 @@ public class ClientHomePanel extends JPanel {
                 Window window = (Window) SwingUtilities.getWindowAncestor(this);
                 setSelectedOrderId(orderid);
                 window.switchMainPanel(MainPanels.VIEW_ORDER);
-                
+
             });
             ordersPanel.add(orderButton);
         });
@@ -129,7 +129,7 @@ public class ClientHomePanel extends JPanel {
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
             String query = QueryLoader.loadQuery("GET_ALL_ORDERS");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, window.getUserEmail().orElseThrow(NullPointerException::new));
+                stmt.setString(1, window.getUserEmail().orElseThrow(() -> new IllegalArgumentException("User email not found")));
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int order_id = rs.getInt("order_id");

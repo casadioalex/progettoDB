@@ -151,7 +151,7 @@ public class ViewProductInfo extends JPanel {
         try (Connection conn = getConnection()) {
             String query = QueryLoader.loadQuery("GET_PRODUCT_INGREDIENTS");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, CreateOrderPanel.getSelectedProductName().orElseThrow(NullPointerException::new));
+                stmt.setString(1, CreateOrderPanel.getSelectedProductName().orElseThrow(() -> new IllegalArgumentException("Product name not found")));
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     ingredients.add(rs.getString("ingredient_name"));
@@ -168,7 +168,7 @@ public class ViewProductInfo extends JPanel {
         try (Connection conn = getConnection()) {
             String query = QueryLoader.loadQuery("GET_NUTRITIONAL_INFO");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, CreateOrderPanel.getSelectedProductName().orElseThrow(NullPointerException::new));
+                stmt.setString(1, CreateOrderPanel.getSelectedProductName().orElseThrow(() -> new IllegalArgumentException("Product name not found")));
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     info.put("Calories", rs.getString("calories"));
