@@ -271,6 +271,7 @@ public class RegisterStaffPanel extends JPanel {
 
             if (staff_registered && staff_address_registered) {
                 Window window = (Window) SwingUtilities.getWindowAncestor(this);
+                clearAllComponents();
                 window.switchMainPanel(MainPanels.STAFF_MENU);
             }
 
@@ -282,6 +283,12 @@ public class RegisterStaffPanel extends JPanel {
         }
 
 
+    }
+
+    private void clearAllComponents() {
+        Arrays.stream(getComponents())
+                .filter(component -> component instanceof JTextField || component instanceof JPasswordField)
+                .forEach(component -> ((JTextField) component).setText(""));
     }
 
     private void applyProportionalInsets() {
