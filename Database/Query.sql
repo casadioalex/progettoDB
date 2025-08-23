@@ -2,7 +2,7 @@
     Query to authenticate users during login
 */
 -- LOGIN
-SELECT password FROM USERS WHERE email = ?;
+SELECT password, role FROM USERS WHERE email = ?;
 
 
 /*

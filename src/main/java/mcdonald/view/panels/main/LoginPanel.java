@@ -126,10 +126,11 @@ public class LoginPanel extends JPanel {
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String storedHash = rs.getString("password");
+                    String userRole = rs.getString("role");
                     if (HashingUtil.checkPassword(user_password, storedHash)) {
-                        // TODO: Handle successful login
                         System.out.println("Login successful");
                         errorMessage.setVisible(false);
+                        handleLoginSuccess(userRole);
                     } else {
                         errorMessage.setText("Email or password is incorrect");
                         errorMessage.setVisible(true);
@@ -144,6 +145,25 @@ public class LoginPanel extends JPanel {
             System.err.println("SQL error: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void handleLoginSuccess(String userRole) {
+        Window window = (Window) SwingUtilities.getWindowAncestor(this);
+        switch (userRole.toUpperCase()) {
+            case "CLIENT" -> window.switchMainPanel(MainPanels.CLIENT_HOME);
+                
+            case "STAFF" -> {
+                // TODO: window.switchMainPanel(MainPanels.STAFF_HOME);
+            }
+            case "ADMIN" -> {
+                // TODO: window.switchMainPanel(MainPanels.ADMIN_HOME);
+            }
+            default -> {
+                System.err.println("Unknown user role: " + userRole);
+                errorMessage.setText("An error occurred. Please try again.");
+                errorMessage.setVisible(true);
+            }
         }
     }
 
