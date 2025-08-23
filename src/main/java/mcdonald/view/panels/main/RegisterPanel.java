@@ -74,7 +74,6 @@ public class RegisterPanel extends JPanel {
 
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Title
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 6;
@@ -83,7 +82,6 @@ public class RegisterPanel extends JPanel {
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         add(titleLabel, gbc);
 
-        // Username
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy++;
@@ -92,7 +90,6 @@ public class RegisterPanel extends JPanel {
         usernameField = new JTextField(TEXT_FIELD_WIDTH);
         add(usernameField, gbc);
 
-        // Name
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(NAME_LABEL_TEXT), gbc);
@@ -100,7 +97,6 @@ public class RegisterPanel extends JPanel {
         nameField = new JTextField(TEXT_FIELD_WIDTH);
         add(nameField, gbc);
 
-        // Surname
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(SURNAME_LABEL_TEXT), gbc);
@@ -108,7 +104,6 @@ public class RegisterPanel extends JPanel {
         surnameField = new JTextField(TEXT_FIELD_WIDTH);
         add(surnameField, gbc);
 
-        // Email
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(EMAIL_LABEL_TEXT), gbc);
@@ -116,7 +111,6 @@ public class RegisterPanel extends JPanel {
         emailField = new JTextField(TEXT_FIELD_WIDTH);
         add(emailField, gbc);
 
-        // Password
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(PASSWORD_LABEL_TEXT), gbc);
@@ -124,14 +118,12 @@ public class RegisterPanel extends JPanel {
         passwordField = new JPasswordField(TEXT_FIELD_WIDTH);
         add(passwordField, gbc);
 
-        // Address street
         gbc.gridx++;
         add(new JLabel(ADDRESS_STREET_LABEL_TEXT), gbc);
         gbc.gridx++;
         addressStreetField = new JTextField(TEXT_FIELD_WIDTH);
         add(addressStreetField, gbc);
 
-        // Address number
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(ADDRESS_NUMBER_LABEL_TEXT), gbc);
@@ -139,14 +131,12 @@ public class RegisterPanel extends JPanel {
         addressNumberField = new JTextField(TEXT_FIELD_WIDTH / 2);
         add(addressNumberField, gbc);
 
-        // Address city
         gbc.gridx++;
         add(new JLabel(ADDRESS_CITY_LABEL_TEXT), gbc);
         gbc.gridx++;
         addressCityField = new JTextField(TEXT_FIELD_WIDTH);
         add(addressCityField, gbc);
 
-        // Address postal code
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(ADDRESS_POSTAL_CODE_LABEL_TEXT), gbc);
@@ -154,14 +144,12 @@ public class RegisterPanel extends JPanel {
         addressPostalCodeField = new JTextField(TEXT_FIELD_WIDTH / 2);
         add(addressPostalCodeField, gbc);
 
-        // Address province
         gbc.gridx++;
         add(new JLabel(ADDRESS_PROVINCE_LABEL_TEXT), gbc);
         gbc.gridx++;
         addressProvinceField = new JTextField(TEXT_FIELD_WIDTH);
         add(addressProvinceField, gbc);
 
-        // Buttons
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
