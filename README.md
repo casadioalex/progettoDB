@@ -4,7 +4,7 @@
 ## Requisiti:
 - Java 21+
 - MySQL 8.0+
-- Scaricare i file `McDonald.sql` e `McDonald.jar` dal più recente [Release](https://github.com/Jackmo04/Progetto-BD/releases)
+- Scaricare i file `McDonald.sql` e `McDonald.jar` dal più recente [Release](https://github.com/casadioalex/progettoDB/releases)
 
 ## Creazione del database MySQL in locale:
 - Avviare lo script `McDonald.sql` su una connessione localhost di MySQL
