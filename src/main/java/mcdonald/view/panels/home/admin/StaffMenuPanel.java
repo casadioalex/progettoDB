@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class StaffMenu extends JPanel {
+public class StaffMenuPanel extends JPanel {
     private static final String TITLE = "STAFF MENU";
     private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
     private static final String NEW_STAFF_BUTTON_TEXT = "NEW STAFF MEMBER";
@@ -38,7 +38,7 @@ public class StaffMenu extends JPanel {
     private final JButton newStaffButton;
     private final JPanel staffPanel;
 
-    public StaffMenu() {
+    public StaffMenuPanel() {
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
 

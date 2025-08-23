@@ -10,23 +10,21 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import mcdonald.model.common.QueryLoader;
 
-public class StaffHome extends JPanel {
-
-    private static final String TITLE = "STAFF HOME";
-    private static final String LOGOUT_BUTTON_TEXT = "LOGOUT";
+public class OrderDetailsPanel extends JPanel {
+    private static final String TITLE = "ORDER DETAILS";
+    private static final String BACK_BUTTON_TEXT = "BACK TO HOME";
+    private static final String COMPLETE_ORDER_BUTTON_TEXT = "COMPLETE ORDER";
 
     private static final double WIDTH_INSET_PROPORTION = 0.05;
     private static final double HEIGHT_INSET_PROPORTION = 0.1;
@@ -37,13 +35,13 @@ public class StaffHome extends JPanel {
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
-    private final JButton logoutButton;
-    private final JPanel ordersPanel;
-    private final List<Integer> ordersIds = new ArrayList<>();
+    private final JButton backButton;
+    private final JButton completeOrderButton;
+    private final JTable orderTable;
+    private final DefaultTableModel tableModel;
 
-    public StaffHome(String userEmail) {
+    public OrderDetailsPanel(int orderId) {
         setLayout(new GridBagLayout());
-
         gbc.fill = GridBagConstraints.BOTH;
 
         gbc.gridx = 0;
@@ -55,61 +53,51 @@ public class StaffHome extends JPanel {
         add(titleLabel, gbc);
 
         gbc.gridy++;
-        ordersPanel = new JPanel();
-        ordersPanel.setLayout(new BoxLayout(ordersPanel, BoxLayout.Y_AXIS));
-        getUncompletedOrdersIds();
-        for (int orderid : ordersIds) {
-            JButton orderButton = new JButton(String.format("ORDER: #%04d", orderid));
-            orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
-            orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
-            orderButton.addActionListener(e -> apriOrdine(orderid));
-            ordersPanel.add(orderButton);
-        }
-
-        JScrollPane scrollPane = new JScrollPane(ordersPanel);
-        scrollPane.setPreferredSize(new Dimension(500, 300));
-
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        tableModel = new DefaultTableModel(new Object[] { "Product Name", "Quantity" }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        orderTable = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(orderTable);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
         add(scrollPane, gbc);
 
-        gbc.gridy++;
+        getOrderDetailsById(orderId);
+
         gbc.gridwidth = 1;
+        gbc.gridy++;
         gbc.weightx = 0.5;
-        logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
-        add(logoutButton, gbc);
+        gbc.weighty = 0;
+        backButton = new JButton(BACK_BUTTON_TEXT);
+        add(backButton, gbc);
 
-        String role = getUserRole(userEmail);
-        if ("ADMIN".equalsIgnoreCase(role)) {
-            gbc.gridx++;
-            JButton viewStaffButton = new JButton("VIEW STAFF");
-            add(viewStaffButton, gbc);
-            viewStaffButton.addActionListener(e -> apriStaffMenu());
-            
-        }
+        gbc.gridwidth = 1;
+        gbc.gridx++;
+        completeOrderButton = new JButton(COMPLETE_ORDER_BUTTON_TEXT);
+        add(completeOrderButton, gbc);
+        completeOrderButton.addActionListener(e -> completeOrder(orderId));
     }
 
-    private void apriOrdine(int orderid) {
-        //TODO: spostarsi a order details dando come parametro order per la query
-        JOptionPane.showMessageDialog(this, "Hai aperto: " + orderid);
-    }
-
-    private void apriStaffMenu() {
-        //TODO: spostarsi staff menu
-        JOptionPane.showMessageDialog(this, "Hai aperto: Staff Menu" );
-    }
-
-    private void getUncompletedOrdersIds() {
+    private void getOrderDetailsById(int orderId) {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
-            String query = QueryLoader.loadQuery("GET_UNCOMPLETED_ORDERS");
+            String query = QueryLoader.loadQuery("GET_ORDER_DETAILS_BY_ORDER_ID");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    int order_id = rs.getInt("order_id");
-                    ordersIds.add(order_id);
+                stmt.setInt(1, orderId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String productName = rs.getString("product_name");
+                        int quantity = rs.getInt("quantity");
+                        tableModel.addRow(new Object[] { productName, quantity });
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -119,20 +107,22 @@ public class StaffHome extends JPanel {
         }
     }
 
-    private String getUserRole(String email) {
+    private void completeOrder(int orderId) {
         String database = "mcdonald";
         String url = "jdbc:mysql://localhost:3306/" + database;
         String db_email = "root";
         String db_password = "";
-        String role = "";
 
         try (Connection conn = DriverManager.getConnection(url, db_email, db_password)) {
-            String query = QueryLoader.loadQuery("GET_USER_ROLE");
+            String query = QueryLoader.loadQuery("COMPLETE_ORDER");
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, email);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    role = rs.getString("role");
+                stmt.setInt(1, orderId);
+                int updated = stmt.executeUpdate();
+                if (updated > 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Ordine completato!");
+                    completeOrderButton.setEnabled(false);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Errore: ordine non trovato.");
                 }
             }
         } catch (SQLException e) {
@@ -140,7 +130,6 @@ public class StaffHome extends JPanel {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-        return role;
     }
 
     @Override

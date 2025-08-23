@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import mcdonald.model.common.QueryLoader;
 
-public class StaffDetail extends JPanel {
+public class StaffDetailPanel extends JPanel {
     private static final String TITLE = "STAFF DETAILS";
     private static final String BACK_BUTTON_TEXT = "BACK TO STAFF MENU";
     private static final String REMOVE_STAFF_BUTTON_TEXT = "REMOVE STAFF MEMBER";
@@ -34,7 +34,7 @@ public class StaffDetail extends JPanel {
     private final JButton backButton;
     private final JButton removeStaffButton;
 
-    public StaffDetail(String staffEmail) {
+    public StaffDetailPanel(String staffEmail) {
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
 
