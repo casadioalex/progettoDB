@@ -153,12 +153,10 @@ public class LoginPanel extends JPanel {
         switch (userRole.toUpperCase()) {
             case "CLIENT" -> window.switchMainPanel(MainPanels.CLIENT_HOME);
                 
-            case "STAFF" -> {
-                // TODO: window.switchMainPanel(MainPanels.STAFF_HOME);
-            }
-            case "ADMIN" -> {
-                // TODO: window.switchMainPanel(MainPanels.ADMIN_HOME);
-            }
+            case "STAFF" -> window.switchMainPanel(MainPanels.STAFF_HOME);
+            
+            case "ADMIN" -> window.switchMainPanel(MainPanels.STAFF_HOME);
+            
             default -> {
                 System.err.println("Unknown user role: " + userRole);
                 errorMessage.setText("An error occurred. Please try again.");
