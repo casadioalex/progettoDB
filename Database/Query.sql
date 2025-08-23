@@ -63,3 +63,6 @@ INSERT INTO ORDERS (user_email, address_street, address_number, address_city, pr
 
 -- CREATE_ORDER_DETAILS
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES (?, ?, ?);
+
+-- GET_ORDER_DETAILS
+SELECT * FROM ORDER_DETAILS WHERE order_id = ?;

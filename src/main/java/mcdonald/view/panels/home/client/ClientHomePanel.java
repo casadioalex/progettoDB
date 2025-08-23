@@ -10,9 +10,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -44,6 +44,7 @@ public class ClientHomePanel extends JPanel {
 
     private final Map<Integer, String> ordersIds = new LinkedHashMap<>();
     private boolean dataLoaded = false;
+    private static Optional<Integer> selectedOrderId = Optional.empty();
 
     public ClientHomePanel() {
         setLayout(new GridBagLayout());
@@ -106,7 +107,12 @@ public class ClientHomePanel extends JPanel {
             orderButton.setName(String.valueOf(orderid));
             orderButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
             orderButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, orderButton.getPreferredSize().height));
-            //orderButton.addActionListener(e -> apriOrdine(orderid));
+            orderButton.addActionListener(e -> {
+                Window window = (Window) SwingUtilities.getWindowAncestor(this);
+                setSelectedOrderId(orderid);
+                window.switchMainPanel(MainPanels.VIEW_ORDER);
+                
+            });
             ordersPanel.add(orderButton);
         });
         ordersPanel.revalidate();
@@ -159,6 +165,18 @@ public class ClientHomePanel extends JPanel {
         if (!dataLoaded) {
             loadOrders();
             dataLoaded = true;
+        }
+    }
+
+    public static Optional<Integer> getSelectedOrderId() {
+        return selectedOrderId;
+    }
+
+    public static void setSelectedOrderId(int orderId) {
+        if (Optional.ofNullable(orderId).isEmpty() || orderId <= 0) {
+            selectedOrderId = Optional.empty();
+        } else {
+            selectedOrderId = Optional.of(orderId);
         }
     }
 
