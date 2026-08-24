@@ -213,7 +213,9 @@ INSERT INTO NUTRITIONAL_INFOS (product_name, calories, carbohydrates, proteins, 
 INSERT INTO ORDERS (price, order_date, user_email, address_street, address_number, address_city, completed) VALUES
 (10.80, '2025-08-10', 'mario.rossi@email.com', 'Via Roma', '10', 'Milano', true),
 (9.50, '2025-08-12', 'giulia.verdi@email.com', 'Via Toledo', '256', 'Napoli', false),
-(5.50, '2025-08-15', 'mario.rossi@email.com', 'Corso Vittorio Emanuele', '22', 'Milano', true);
+(5.50, '2025-08-15', 'mario.rossi@email.com', 'Corso Vittorio Emanuele', '22', 'Milano', true),
+(10.80, '2026-08-22', 'client@email.com', 'Via Indefinita', '104', 'Pinnacoli Pendenti', false),
+(12.00, '2026-08-23', 'paolo.neri@email.com', 'Via Indipendenza', '8', 'Bologna', false);
 
 -- ORDER_DETAILS table population
 INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
@@ -223,4 +225,9 @@ INSERT INTO ORDER_DETAILS (order_id, product_name, quantity) VALUES
 (2, 'Cheeseburger', 2),
 (2, 'Patatine Fritte Medie', 1),
 (2, 'McFlurry Oreo', 1),
-(3, 'Big Mac', 1);
+(3, 'Big Mac', 1),
+(4, 'Big Mac', 1),
+(4, 'Patatine Fritte Medie', 1),
+(4, 'Coca-Cola 0.5L', 1),
+(5, 'Chicken McNuggets 6pz', 2),
+(5, 'Acqua Naturale 0.5L', 2);

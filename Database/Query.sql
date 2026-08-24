@@ -156,3 +156,34 @@ WHERE email = ?
 -- GET_ORDER_DETAILS
 SELECT * FROM ORDER_DETAILS WHERE order_id = ?;
 
+/*
+    Query to get most profitable product of this week
+*/
+-- GET_BEST_PRODUCT_LAST_WEEK
+SELECT p.name, p.price, SUM(od.quantity) AS total_quantity_sold, SUM(od.quantity * p.price) AS total_earnings
+FROM PRODUCTS p
+JOIN ORDER_DETAILS od ON p.name = od.product_name
+JOIN ORDERS o ON od.order_id = o.order_id
+WHERE o.order_date >= CURDATE() - INTERVAL 7 DAY
+GROUP BY p.name, p.price
+ORDER BY total_earnings DESC
+LIMIT 5;
+
+/*
+    Query to get most profitable product of all time
+*/
+-- GET_BEST_PRODUCT_ALL_TIME
+SELECT p.name, p.price, SUM(od.quantity) AS total_quantity_sold, SUM(od.quantity * p.price) AS total_earnings
+FROM PRODUCTS p
+JOIN ORDER_DETAILS od ON p.name = od.product_name
+GROUP BY p.name, p.price
+ORDER BY total_earnings DESC
+LIMIT 5;
+
+
+/*
+    Percentage of completed orders that cost more than 15 euro
+*/
+-- GET_ORDERS_ABOVE_15_PERCENT
+SELECT COUNT(CASE WHEN price > 15 THEN 1 END) AS orders_above_15, COUNT(*) AS total_orders, ROUND(COUNT(CASE WHEN price > 15 THEN 1 END) * 100.0 / COUNT(*), 2) AS percentage
+FROM ORDERS;

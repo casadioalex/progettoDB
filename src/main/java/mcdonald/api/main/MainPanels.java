@@ -6,6 +6,7 @@ import mcdonald.view.panels.home.admin.BlockUserPanel;
 import mcdonald.view.panels.home.admin.RegisterStaffPanel;
 import mcdonald.view.panels.home.admin.StaffDetailPanel;
 import mcdonald.view.panels.home.admin.StaffMenuPanel;
+import mcdonald.view.panels.home.admin.ViewStatsPanel;
 import mcdonald.view.panels.home.client.ClientHomePanel;
 import mcdonald.view.panels.home.client.CreateOrderPanel;
 import mcdonald.view.panels.home.client.ViewOrderPanel;
@@ -27,7 +28,8 @@ public enum MainPanels {
     CREATE_ORDER(new CreateOrderPanel()),
     ORDER_DETAILS(new OrderDetailsPanel()),
     BLOCK_USERS(new BlockUserPanel()),
-    VIEW_PRODUCT_INFO(new ViewProductInfo());
+    VIEW_PRODUCT_INFO(new ViewProductInfo()),
+    VIEW_STATS(new ViewStatsPanel());
 
     private final JPanel panel;
 

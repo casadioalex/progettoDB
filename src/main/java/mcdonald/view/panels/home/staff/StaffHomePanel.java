@@ -41,6 +41,7 @@ public class StaffHomePanel extends JPanel {
     private final List<Integer> ordersIds = new ArrayList<>();
     private final JButton viewStaffButton;
     private final JButton blockUserButton;
+    private final JButton statsButton;
 
     public StaffHomePanel() {
         setLayout(new GridBagLayout());
@@ -80,20 +81,10 @@ public class StaffHomePanel extends JPanel {
         add(refreshButton, gbc);
         refreshButton.addActionListener(e -> refreshOrdersList());
 
-        gbc.gridy++;
+        // Crea i pulsanti admin e aggiungili al pannello, ma nascondili
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        gbc.weightx = 0.3;
-        logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
-        add(logoutButton, gbc);
-        logoutButton.addActionListener(e -> {
-            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
-            Window.setUserEmail(null);
-            window.switchMainPanel(MainPanels.LOGIN);
-        });
-
-        // Crea i pulsanti admin e aggiungili al pannello, ma nascondili
-        gbc.gridx++;
+        gbc.gridy++;
         viewStaffButton = new JButton("VIEW STAFF");
         add(viewStaffButton, gbc);
         viewStaffButton.addActionListener(e -> apriStaffMenu());
@@ -102,6 +93,22 @@ public class StaffHomePanel extends JPanel {
         blockUserButton = new JButton("VIEW USERS");
         add(blockUserButton, gbc);
         blockUserButton.addActionListener(e -> apriBlockUsers());
+
+        gbc.gridx++;
+        statsButton = new JButton("VIEW STATS");
+        add(statsButton, gbc);
+        statsButton.addActionListener(e -> apriStats());
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.weightx = 3;
+        logoutButton = new JButton(LOGOUT_BUTTON_TEXT);
+        add(logoutButton, gbc);
+        logoutButton.addActionListener(e -> {
+            Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+            Window.setUserEmail(null);
+            window.switchMainPanel(MainPanels.LOGIN);
+        });
     }
 
     @Override
@@ -111,6 +118,7 @@ public class StaffHomePanel extends JPanel {
         boolean isAdmin = "ADMIN".equalsIgnoreCase(role);
         viewStaffButton.setVisible(isAdmin);
         blockUserButton.setVisible(isAdmin);
+        statsButton.setVisible(isAdmin);
         refreshOrdersList();
     }
 
@@ -128,6 +136,11 @@ public class StaffHomePanel extends JPanel {
     private void apriBlockUsers() {
         Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
         window.switchMainPanel(MainPanels.BLOCK_USERS);
+    }
+
+    private void apriStats() {
+        Window window = (mcdonald.view.main.Window) SwingUtilities.getWindowAncestor(this);
+        window.switchMainPanel(MainPanels.VIEW_STATS);
     }
 
     private void populateOrdersPanel() {
